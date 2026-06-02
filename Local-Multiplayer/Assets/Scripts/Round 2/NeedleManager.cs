@@ -73,7 +73,6 @@ public class NeedleManager : MonoBehaviour
     private bool p1Carrying = false;
     private bool p2Carrying = false;
 
-    // Hold timers
     private float p1CollectTimer = 0f;
     private float p1DepositTimer = 0f;
     private float p2CollectTimer = 0f;
@@ -148,7 +147,6 @@ public class NeedleManager : MonoBehaviour
     {
         if (held)
         {
-            // Not carrying yet — try to collect from pile
             if (!carrying && inPile && PileCount > 0)
             {
                 collectTimer += Time.deltaTime;
@@ -287,7 +285,7 @@ public class NeedleManager : MonoBehaviour
 
     private void CheckKillerShotCondition()
     {
-        // First Killer Shot
+        // first Killer Shot
         if (!killerShot1Triggered && PileCount <= killerShotThreshold1)
         {
             killerShot1Triggered = true;
@@ -298,7 +296,7 @@ public class NeedleManager : MonoBehaviour
             OnKillerShotConditionMet?.Invoke(1);
         }
 
-        // Second Killer Shot
+        // second Killer Shot
         if (!killerShot2Triggered && PileCount <= killerShotThreshold2)
         {
             killerShot2Triggered = true;
@@ -345,8 +343,6 @@ public class NeedleManager : MonoBehaviour
 
         SaveToMatchData();
     }
-
-    // Zone wiring
 
     private void WireZones()
     {
@@ -402,8 +398,6 @@ public class NeedleManager : MonoBehaviour
             p2InDeposit = v;
     }
 
-    // Player reference resolution
-
     private void TryResolvePlayerReferences()
     {
         var controllers = FindObjectsByType<MultiplayerPlayerController>(FindObjectsSortMode.None);
@@ -423,8 +417,6 @@ public class NeedleManager : MonoBehaviour
         if (p1Controller != null && p2Controller != null)
             playersResolved = true;
     }
-
-    // Winner + persistence
 
     public void CompareAndDecideWinner()
     {
