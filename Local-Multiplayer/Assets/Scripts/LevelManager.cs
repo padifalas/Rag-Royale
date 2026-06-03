@@ -1,18 +1,22 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager Instance;
+
     [SerializeField] private GameObject loaderCanvas;
     [SerializeField] private Slider progressBar;
-    public static LevelManager Instance;
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            loaderCanvas.SetActive(false);
         }
         else
         {
@@ -21,19 +25,28 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    async void LoadScene(string sceneName)
+    public async void LoadScene(string sceneName)
     {
-        var scene = SceneManager.LoadSceneAsync(sceneName);
+        loaderCanvas.SetActive(true);
+        progressBar.value = 0f;
+
+        AsyncOperation scene = SceneManager.LoadSceneAsync(sceneName);
         scene.allowSceneActivation = false;
 
-        loaderCanvas.SetActive(true);
+        float displayedProgress = 0f;
 
-        do
+        while (displayedProgress < 1f)
         {
-            progressBar.value = scene.progress;
-        } while (scene.progress < 0.9f);
+            displayedProgress += Time.deltaTime * 0.8f;
+            progressBar.value = displayedProgress;
+
+            await Task.Yield();
+        }
 
         scene.allowSceneActivation = true;
+
+        await Task.Delay(200);
+
         loaderCanvas.SetActive(false);
 
 

@@ -50,7 +50,7 @@ public class SceneScript : MonoBehaviour
     #region Scene Switcher
     public void SceneSwitch(string sceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        LevelManager.Instance.LoadScene(sceneName);
         Debug.Log($"Loading scene: {sceneName}");
 
     }
