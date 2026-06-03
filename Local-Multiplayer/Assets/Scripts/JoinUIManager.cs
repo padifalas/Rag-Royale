@@ -1,25 +1,37 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
-
 
 public class JoinUIManager : MonoBehaviour
 {
     [Header("P1 UI")]
-    [SerializeField] private GameObject p1PromptRoot;
-    [SerializeField] private TextMeshProUGUI p1PromptText;
-    [SerializeField] private TextMeshProUGUI p1JoinedText;
+    [SerializeField]
+    private GameObject p1PromptRoot;
+
+    [SerializeField]
+    private GameObject p1PromptText;
+
+    [SerializeField]
+    private GameObject p1JoinedText;
+
     [Header("P2 UI")]
-    [SerializeField] private GameObject p2PromptRoot;
-    [SerializeField] private TextMeshProUGUI p2PromptText;
-    [SerializeField] private TextMeshProUGUI p2JoinedText;
+    [SerializeField]
+    private GameObject p2PromptRoot;
+
+    [SerializeField]
+    private GameObject p2PromptText;
+
+    [SerializeField]
+    private GameObject p2JoinedText;
 
     [Header("Settings")]
-    [SerializeField] private float hideDelay = 1.5f;
+    [SerializeField]
+    private float hideDelay = 1.5f;
 
     [Header("References")]
-    [SerializeField] private CountdownManager countdownManager;  
+    [SerializeField]
+    private CountdownManager countdownManager;
 
     private bool p1Joined = false;
     private bool p2Joined = false;
@@ -34,7 +46,6 @@ public class JoinUIManager : MonoBehaviour
         p1PromptText.gameObject.SetActive(true);
         p2PromptText.gameObject.SetActive(true);
     }
-
 
     public void OnPlayerJoined(PlayerInput player)
     {
@@ -57,7 +68,7 @@ public class JoinUIManager : MonoBehaviour
 
     //=
 
-    private void ShowJoined(TextMeshProUGUI promptText, TextMeshProUGUI joinedText)
+    private void ShowJoined(GameObject promptText, GameObject joinedText)
     {
         promptText.gameObject.SetActive(false);
         joinedText.gameObject.SetActive(true);
@@ -72,7 +83,6 @@ public class JoinUIManager : MonoBehaviour
         p1PromptRoot.SetActive(false);
         p2PromptRoot.SetActive(false);
 
-
-    countdownManager?.StartCountdown();
+        countdownManager?.StartCountdown();
     }
 }
