@@ -37,11 +37,14 @@ public class AudioManager : MonoBehaviour
     public float SFXVolume
     {
         get => sfxVolume;
-        set { sfxVolume = value; }
+        set => sfxVolume = value;
     }
 
-    [Header("Music")]
-    public AudioClip musicTrack;
+    [Header("Music  for Round")]
+    public AudioClip[] roundTracks;
+
+    [SerializeField]
+    private float crossfadeDuration = 1.5f;
 
     [Header("Combat SFX")]
     public AudioClip lightHit;
@@ -70,6 +73,17 @@ public class AudioManager : MonoBehaviour
     public AudioClip countdownTick;
     public AudioClip countdownFinalTick;
 
+    [Header("Round 2 - Needle  Clips")]
+    public AudioClip needleCollect;
+    public AudioClip needleDeposit;
+    public AudioClip needleStolen;
+
+    [Header("Round 2 -Spatial Sources")]
+    public AudioSource p1SpatialSource;
+
+    [Tooltip("AudioSource positioned at P2's side of the arena (right).")]
+    public AudioSource p2SpatialSource;
+
     [Header("UI SFX")]
     public AudioClip menuNavigate;
     public AudioClip menuConfirm;
@@ -83,11 +97,13 @@ public class AudioManager : MonoBehaviour
     private int sfxPoolSize = 16;
 
     private List<AudioSource> sfxPool = new List<AudioSource>();
-    private AudioSource musicSource;
+    private AudioSource musicSourceA;
+    private AudioSource musicSourceB;
+    private bool musicOnA = true;
     private AudioSource ambientSource;
     private AudioSource stringLoopSource;
 
-    private float musicTargetVolume = 0f;
+    private float musicTargetVolume = 1f;
     private Coroutine musicFadeCoroutine;
 
     private void Awake()
@@ -101,7 +117,7 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         BuildSFXPool();
-        BuildMusicSource();
+        BuildMusicSources();
         BuildAmbientSource();
         BuildStringLoopSource();
     }
@@ -116,16 +132,17 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void BuildMusicSource()
+    private void BuildMusicSources()
     {
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.clip = musicTrack;
-        musicSource.loop = true;
-        musicSource.playOnAwake = false;
-        musicSource.volume = 0f;
+        musicSourceA = gameObject.AddComponent<AudioSource>();
+        musicSourceA.loop = true;
+        musicSourceA.playOnAwake = false;
+        musicSourceA.volume = 0f;
 
-        if (musicTrack != null)
-            musicSource.Play();
+        musicSourceB = gameObject.AddComponent<AudioSource>();
+        musicSourceB.loop = true;
+        musicSourceB.playOnAwake = false;
+        musicSourceB.volume = 0f;
     }
 
     private void BuildAmbientSource()
@@ -145,28 +162,69 @@ public class AudioManager : MonoBehaviour
         stringLoopSource.volume = 0f;
     }
 
-    public void SetMusicVolume(float targetVolume, float fadeDuration = 1f)
+    public void CrossfadeToRound(int roundIndex)
     {
-        musicTargetVolume = targetVolume;
+        if (roundTracks == null || roundIndex < 0 || roundIndex >= roundTracks.Length)
+        {
+            Debug.LogWarning($"[AudioManager] No track for round index {roundIndex}.");
+            return;
+        }
+
+        AudioClip nextClip = roundTracks[roundIndex];
+        if (nextClip == null)
+            return;
+
+        AudioSource fadeOut = musicOnA ? musicSourceA : musicSourceB;
+        AudioSource fadeIn = musicOnA ? musicSourceB : musicSourceA;
+        musicOnA = !musicOnA;
+
+        fadeIn.clip = nextClip;
+        fadeIn.volume = 0f;
+        fadeIn.Play();
 
         if (musicFadeCoroutine != null)
             StopCoroutine(musicFadeCoroutine);
-        musicFadeCoroutine = StartCoroutine(
-            FadeSource(musicSource, masterVolume * musicVolume * targetVolume, fadeDuration)
-        );
+        musicFadeCoroutine = StartCoroutine(CrossfadeRoutine(fadeOut, fadeIn));
     }
 
-    public void RestartMusic()
+    private IEnumerator CrossfadeRoutine(AudioSource fadeOut, AudioSource fadeIn)
     {
-        if (musicTrack == null)
-            return;
-        musicSource.Stop();
-        musicSource.Play();
+        float targetVol = masterVolume * musicVolume * musicTargetVolume;
+        float elapsed = 0f;
+        float startOut = fadeOut.volume;
+
+        while (elapsed < crossfadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / crossfadeDuration);
+            fadeIn.volume = Mathf.Lerp(0f, targetVol, t);
+            fadeOut.volume = Mathf.Lerp(startOut, 0f, t);
+            yield return null;
+        }
+
+        fadeIn.volume = targetVol;
+        fadeOut.volume = 0f;
+        fadeOut.Stop();
+        fadeOut.clip = null;
+        musicFadeCoroutine = null;
+    }
+
+    public void SetMusicVolume(float targetVolume, float fadeDuration = 1f)
+    {
+        musicTargetVolume = targetVolume;
+        AudioSource active = musicOnA ? musicSourceB : musicSourceA;
+        if (musicFadeCoroutine != null)
+            StopCoroutine(musicFadeCoroutine);
+        musicFadeCoroutine = StartCoroutine(
+            FadeSource(active, masterVolume * musicVolume * targetVolume, fadeDuration)
+        );
     }
 
     private void RefreshMusicVolume()
     {
-        musicSource.volume = masterVolume * musicVolume * musicTargetVolume;
+        float vol = masterVolume * musicVolume * musicTargetVolume;
+        musicSourceA.volume = musicSourceA.isPlaying ? vol : 0f;
+        musicSourceB.volume = musicSourceB.isPlaying ? vol : 0f;
         ambientSource.volume = masterVolume * musicVolume * 0.35f;
     }
 
@@ -192,6 +250,7 @@ public class AudioManager : MonoBehaviour
         src.clip = clip;
         src.volume = masterVolume * sfxVolume * volume;
         src.pitch = 1f + Random.Range(-pitchVariance, pitchVariance);
+        src.spatialBlend = 0f; // 2D
         src.Play();
     }
 
@@ -204,6 +263,34 @@ public class AudioManager : MonoBehaviour
             if (!s.isPlaying)
                 return s;
         return sfxPool[0];
+    }
+
+    public void PlayNeedleSFX(int playerID, AudioClip clip, float pitchVariance = 0.08f)
+    {
+        if (clip == null)
+            return;
+
+        AudioSource src = playerID == 1 ? p1SpatialSource : p2SpatialSource;
+        if (src == null)
+        {
+            PlaySFX(clip, 1f, pitchVariance);
+            return;
+        }
+
+        src.clip = clip;
+        src.volume = masterVolume * sfxVolume;
+        src.pitch = 1f + Random.Range(-pitchVariance, pitchVariance);
+        src.Play();
+    }
+
+    public void PlayNeedleCollect(int playerID) => PlayNeedleSFX(playerID, needleCollect);
+
+    public void PlayNeedleDeposit(int playerID) => PlayNeedleSFX(playerID, needleDeposit);
+
+    public void PlayNeedleStolen()
+    {
+        PlayNeedleSFX(1, needleStolen, 0f);
+        PlayNeedleSFX(2, needleStolen, 0f);
     }
 
     public void StartStringPullLoop()
@@ -226,16 +313,20 @@ public class AudioManager : MonoBehaviour
     {
         float startVol = src.volume;
         float elapsed = 0f;
-
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
             src.volume = Mathf.Lerp(startVol, targetVol, elapsed / duration);
             yield return null;
         }
-
         src.volume = targetVol;
         if (stopOnComplete)
             src.Stop();
+    }
+
+    public void RegisterSpatialSources(AudioSource p1, AudioSource p2)
+    {
+        p1SpatialSource = p1;
+        p2SpatialSource = p2;
     }
 }

@@ -46,19 +46,16 @@ public class NeedleManager : MonoBehaviour
     [SerializeField]
     private NeedleSpawner needleSpawner;
 
-    //  events
     public UnityEvent<int> OnPileCountChanged;
     public UnityEvent<int, int> OnPlayerNeedleCountChanged;
     public UnityEvent<int> OnKillerShotConditionMet;
     public UnityEvent<int> OnNeedleStolen;
     public UnityEvent<int> OnRoundWinner;
 
-    //  public state
     public int PileCount { get; private set; }
     public int P1NeedleCount { get; private set; }
     public int P2NeedleCount { get; private set; }
 
-    // private state
     [SerializeField]
     public int currentKillerShotLevel = 0;
     private bool killerShot1Triggered = false;
@@ -69,23 +66,24 @@ public class NeedleManager : MonoBehaviour
     private bool p2CollectToggle = false;
     private bool p1CollectHeld = false;
     private bool p2CollectHeld = false;
-
     private bool p1Carrying = false;
     private bool p2Carrying = false;
 
-    private float p1CollectTimer = 0f;
-    private float p1DepositTimer = 0f;
-    private float p2CollectTimer = 0f;
-    private float p2DepositTimer = 0f;
+    private float p1CollectTimer = 0f,
+        p1DepositTimer = 0f;
+    private float p2CollectTimer = 0f,
+        p2DepositTimer = 0f;
 
-    private bool p1InPile = false;
-    private bool p2InPile = false;
-    private bool p1InDeposit = false;
-    private bool p2InDeposit = false;
+    private bool p1InPile = false,
+        p2InPile = false;
+    private bool p1InDeposit = false,
+        p2InDeposit = false;
 
     private MultiplayerPlayerController p1Controller;
     private MultiplayerPlayerController p2Controller;
     private bool playersResolved = false;
+
+    // -------------------------------------------------------
 
     private void Start()
     {
@@ -156,7 +154,6 @@ public class NeedleManager : MonoBehaviour
                     TryCollect(id);
                 }
             }
-            // caarrrying and standing in deposit zone — deposit
             else if (carrying && inDeposit)
             {
                 depositTimer += Time.deltaTime;
@@ -164,7 +161,6 @@ public class NeedleManager : MonoBehaviour
                 {
                     depositTimer = 0f;
                     DoDeposit(id);
-
                     SetToggle(id, false);
                 }
             }
@@ -189,7 +185,6 @@ public class NeedleManager : MonoBehaviour
         else
         {
             SetToggle(playerID, false);
-
             if (carrying)
             {
                 if (inDeposit)
@@ -236,6 +231,8 @@ public class NeedleManager : MonoBehaviour
             p2Carrying = true;
         }
 
+        AudioManager.Instance?.PlayNeedleCollect(playerID);
+
         OnPileCountChanged?.Invoke(PileCount);
         OnPlayerNeedleCountChanged?.Invoke(playerID, playerID == 1 ? P1NeedleCount : P2NeedleCount);
         CheckKillerShotCondition();
@@ -253,6 +250,8 @@ public class NeedleManager : MonoBehaviour
             p1Carrying = false;
         else
             p2Carrying = false;
+
+        AudioManager.Instance?.PlayNeedleDeposit(playerID);
 
         OnPlayerNeedleCountChanged?.Invoke(playerID, playerID == 1 ? P1NeedleCount : P2NeedleCount);
     }
@@ -281,29 +280,21 @@ public class NeedleManager : MonoBehaviour
         OnPlayerNeedleCountChanged?.Invoke(playerID, playerID == 1 ? P1NeedleCount : P2NeedleCount);
     }
 
-    // Killer shot
-
     private void CheckKillerShotCondition()
     {
-        // first Killer Shot
         if (!killerShot1Triggered && PileCount <= killerShotThreshold1)
         {
             killerShot1Triggered = true;
             currentKillerShotLevel = 1;
-
             killerShotManager?.ActivateKillerShotForRound2();
-
             OnKillerShotConditionMet?.Invoke(1);
         }
 
-        // second Killer Shot
         if (!killerShot2Triggered && PileCount <= killerShotThreshold2)
         {
             killerShot2Triggered = true;
             currentKillerShotLevel = 2;
-
             killerShotManager?.ActivateKillerShotForRound2();
-
             OnKillerShotConditionMet?.Invoke(2);
         }
     }
@@ -314,14 +305,10 @@ public class NeedleManager : MonoBehaviour
             return;
 
         int loserID = winnerID == 1 ? 2 : 1;
-
         int loserCount = loserID == 1 ? P1NeedleCount : P2NeedleCount;
-
         int stealValue =
             currentKillerShotLevel == 1 ? killerShot1StealAmount : killerShot2StealAmount;
-
         int actualSteal = Mathf.Min(stealValue, loserCount);
-
         if (actualSteal <= 0)
             return;
 
@@ -329,18 +316,14 @@ public class NeedleManager : MonoBehaviour
             P1NeedleCount -= actualSteal;
         else
             P2NeedleCount -= actualSteal;
-
         if (winnerID == 1)
             P1NeedleCount += actualSteal;
         else
             P2NeedleCount += actualSteal;
 
         OnPlayerNeedleCountChanged?.Invoke(winnerID, winnerID == 1 ? P1NeedleCount : P2NeedleCount);
-
         OnPlayerNeedleCountChanged?.Invoke(loserID, loserID == 1 ? P1NeedleCount : P2NeedleCount);
-
         OnNeedleStolen?.Invoke(winnerID);
-
         SaveToMatchData();
     }
 
@@ -439,10 +422,8 @@ public class NeedleManager : MonoBehaviour
         MatchData.Instance.P2NeedleCount = P2NeedleCount;
     }
 
-    public int GetStealAmount()
-    {
-        return currentKillerShotLevel == 1 ? killerShot1StealAmount : killerShot2StealAmount;
-    }
+    public int GetStealAmount() =>
+        currentKillerShotLevel == 1 ? killerShot1StealAmount : killerShot2StealAmount;
 
     public bool KillerShotFired() => killerShot1Triggered || killerShot2Triggered;
 }

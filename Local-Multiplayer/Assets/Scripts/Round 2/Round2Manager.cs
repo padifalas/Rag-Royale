@@ -31,6 +31,9 @@ public class Round2Manager : MonoBehaviour
     {
         DisableCombat();
 
+        // Crossfade to Round 2 music as soon as the scene loads
+        AudioManager.Instance?.CrossfadeToRound(2);
+
         if (countdownManager != null)
             countdownManager.OnCountdownFinished.AddListener(OnCountdownFinished);
 
@@ -38,7 +41,12 @@ public class Round2Manager : MonoBehaviour
             roundTimer.OnTimerExpired.AddListener(OnTimerExpired);
 
         if (needleManager != null)
+        {
             needleManager.OnRoundWinner.AddListener(OnNeedleRoundWinner);
+            needleManager.OnNeedleStolen.AddListener(_ =>
+                AudioManager.Instance?.PlayNeedleStolen()
+            );
+        }
 
         if (killerShotManager != null)
         {
@@ -53,7 +61,6 @@ public class Round2Manager : MonoBehaviour
 
     private void OnNeedleRoundWinner(int winnerID)
     {
-        // Save needle counts for Round 3 — graceful when no MatchData (standalone)
         if (MatchData.Instance != null)
         {
             MatchData.Instance.P1NeedleCount =
@@ -61,8 +68,6 @@ public class Round2Manager : MonoBehaviour
             MatchData.Instance.P2NeedleCount =
                 needleManager != null ? needleManager.P2NeedleCount : 0;
         }
-
-        // 0 = draw; resolve to P1 for now (extend with overtime if needed)
         roundManager.Debug_ForceEndRound(winnerID == 0 ? 1 : winnerID);
     }
 
