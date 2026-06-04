@@ -1651,7 +1651,8 @@ MonoBehaviour:
   masterVolume: 1
   musicVolume: 0.5
   sfxVolume: 1
-  musicTrack: {fileID: 8300000, guid: 82a8ac74164e61646945e1b7132d7cfc, type: 3}
+  roundTracks: []
+  crossfadeDuration: 1.5
   lightHit: {fileID: 8300000, guid: ac6717755fe6770479b55b5c095a7c4f, type: 3}
   heavyHit: {fileID: 8300000, guid: c3aa3ddad0edabc4cb5820f629ce5cdb, type: 3}
   blockImpact: {fileID: 8300000, guid: ce3dc0147b78e6941a75e8ea7e8a1b84, type: 3}
@@ -1668,7 +1669,12 @@ MonoBehaviour:
   roundWinChant: {fileID: 8300000, guid: 42b7a7479138e354f83552d868b4136d, type: 3}
   matchWinChant: {fileID: 8300000, guid: 42b7a7479138e354f83552d868b4136d, type: 3}
   countdownTick: {fileID: 0}
-  countdownFinalTick: {fileID: 0}
+  countdownFinalTick: {fileID: 8300000, guid: 8a17da7e63cd60c48a327ad8fe780c84, type: 3}
+  needleCollect: {fileID: 8300000, guid: 1596d43e09ea98645b16e76ddf6a83b9, type: 3}
+  needleDeposit: {fileID: 8300000, guid: 6a8ac15858fe7774199b3a61b281dfa3, type: 3}
+  needleStolen: {fileID: 8300000, guid: 1a60c44904ee87a47aef7a8aff320b1f, type: 3}
+  p1SpatialSource: {fileID: 0}
+  p2SpatialSource: {fileID: 0}
   menuNavigate: {fileID: 0}
   menuConfirm: {fileID: 0}
   menuBack: {fileID: 0}
