@@ -1,18 +1,25 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.Xml.XPath;
 
 public class SceneTransitionManager : MonoBehaviour
 {
     [Header("Timing")]
-    [SerializeField] private float roundWinDisplayTime  = 2.5f; 
-    [SerializeField] private float matchWinDisplayTime  = 4f; 
+    [SerializeField] private float roundWinDisplayTime = 2.5f;
+    [SerializeField] private float matchWinDisplayTime = 4f;
+
+    [Header("Next Round")]
+    [SerializeField] private GameObject resultsPanel;
+    [SerializeField] private GameObject nextRoundBtn;
 
 
 
     private void Start()
     {
-      
+
         RoundManager roundManager = FindFirstObjectByType<RoundManager>();
         if (roundManager == null)
         {
@@ -28,7 +35,8 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void OnRoundWon(int winnerID)
     {
-    
+        resultsPanel.SetActive(true);
+
     }
 
     private void OnMatchWon(int winnerID)
@@ -36,7 +44,7 @@ public class SceneTransitionManager : MonoBehaviour
         StartCoroutine(LoadMatchResult(winnerID));
     }
 
-    
+
 
 
     public void LoadNextRoundScene(int nextRound)
@@ -50,7 +58,7 @@ public class SceneTransitionManager : MonoBehaviour
 
         if (roundNumber < 1 || roundNumber >= MatchData.RoundScenes.Length)
         {
-          
+
             yield break;
         }
 
@@ -61,12 +69,12 @@ public class SceneTransitionManager : MonoBehaviour
     {
         yield return new WaitForSeconds(matchWinDisplayTime);
 
-       
-      SceneManager.LoadScene(MatchData.MainMenuScene);
+
+        SceneManager.LoadScene(MatchData.MainMenuScene);
 
         // SceneManager.LoadScene(target);
 
-       
+
         if (MatchData.Instance != null)
         {
             MatchData.Instance.ResetMatch();

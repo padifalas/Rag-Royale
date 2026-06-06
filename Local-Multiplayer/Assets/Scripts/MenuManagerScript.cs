@@ -39,6 +39,15 @@ public class MenuManagerScript : MonoBehaviour
 
     }
 
+    #region Scene Switcher
+    public void SceneSwitch(string sceneName)
+    {
+        LevelManager.Instance.LoadScene(sceneName);
+        Debug.Log($"Loading scene: {sceneName}");
+
+    }
+    #endregion
+
     void Update()
     {
         if (MenuInputManager.instance.MenuOpenCloseInput)

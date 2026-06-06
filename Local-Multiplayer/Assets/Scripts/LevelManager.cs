@@ -37,7 +37,7 @@ public class LevelManager : MonoBehaviour
 
         while (displayedProgress < 1f)
         {
-            displayedProgress += Time.deltaTime * 0.8f;
+            displayedProgress += Time.deltaTime * 0.6f;
             progressBar.value = displayedProgress;
 
             await Task.Yield();
