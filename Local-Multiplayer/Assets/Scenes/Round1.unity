@@ -395,7 +395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &29198490
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4729,6 +4729,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199250390}
   m_CullTransparentMesh: 1
+--- !u!114 &209964206 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 831131878825790072, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &211896754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14316,6 +14327,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434389216}
   m_CullTransparentMesh: 1
+--- !u!114 &447961919 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5848001023435540543, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &460693480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15273,6 +15295,17 @@ Transform:
   - {fileID: 1735240011}
   m_Father: {fileID: 1659513946}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &498943547 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5131049868452595644, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &514129252
 GameObject:
   m_ObjectHideFlags: 0
@@ -16265,6 +16298,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0a6a7ea2389bde642b1d331fdfda851d, type: 3}
   m_PrefabInstance: {fileID: 562904338}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &567514656 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 394109839049281221, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1001 &571881913
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22910,7 +22954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 1
-  playerID: 1
+  playerID: 2
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!1 &713788561
 GameObject:
@@ -29079,14 +29123,14 @@ MonoBehaviour:
     - {fileID: 175450066}
     - {fileID: 175450065}
   p2HUD:
-    healthSlider: {fileID: 0}
-    fillImage: {fileID: 0}
-    avatarImage: {fileID: 0}
+    healthSlider: {fileID: 567514656}
+    fillImage: {fileID: 911938499}
+    avatarImage: {fileID: 447961919}
     nameText: {fileID: 0}
-    currentHealthText: {fileID: 0}
+    currentHealthText: {fileID: 1406425386}
     roundPips:
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 498943547}
+    - {fileID: 209964206}
   healthHigh: {r: 0.9, g: 0.75, b: 0.1, a: 1}
   healthMid: {r: 0.95, g: 0.5, b: 0.05, a: 1}
   healthLow: {r: 0.85, g: 0.1, b: 0.1, a: 1}
@@ -30059,7 +30103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 2
-  playerID: 0
+  playerID: 1
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!1 &798988889
 GameObject:
@@ -46242,7 +46286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 0
-  playerID: 0
+  playerID: 1
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!1 &867392507
 GameObject:
@@ -47754,6 +47798,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6812889645874098212, guid: 8839844042ebd0d43ab7ceb2639d5283, type: 3}
   m_PrefabInstance: {fileID: 911785658}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &911938499 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8863288163240580849, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &917921625
 GameObject:
   m_ObjectHideFlags: 0
@@ -53973,7 +54028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 2
-  playerID: 1
+  playerID: 2
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!1001 &983332844
 PrefabInstance:
@@ -57924,7 +57979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.078431375}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -58904,7 +58959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 1
-  playerID: 0
+  playerID: 1
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!1001 &1210765760
 PrefabInstance:
@@ -70255,6 +70310,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0a6a7ea2389bde642b1d331fdfda851d, type: 3}
   m_PrefabInstance: {fileID: 1401241724}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1406425386 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8572806697400160098, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+  m_PrefabInstance: {fileID: 1808209284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1419676327
 GameObject:
   m_ObjectHideFlags: 0
@@ -79818,7 +79884,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -296}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1800493858
@@ -79836,8 +79902,8 @@ MonoBehaviour:
   promptRoot: {fileID: 1800493856}
   promptText: {fileID: 870793187}
   promptBackground: {fileID: 864118324}
-  p1ButtonImage: {fileID: 0}
-  p2ButtonImage: {fileID: 0}
+  p1ButtonPrompt: {fileID: 864118326}
+  p2ButtonPrompt: {fileID: 2128455125}
   p1PromptLabel: REACT!
   p2PromptLabel: REACT!
   bothPromptLabel: REACT!
@@ -79981,6 +80047,10 @@ PrefabInstance:
     - target: {fileID: 3494836723748969866, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
       propertyPath: m_Name
       value: P2-Bar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494836723748969866, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3610555351225216630, guid: aa9f8859c105c5e4c9b237d864bd3027, type: 3}
       propertyPath: m_SizeDelta.x
@@ -100577,7 +100647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputPromptImage
   action: 0
-  playerID: 1
+  playerID: 2
   promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
 --- !u!114 &2128455126
 MonoBehaviour:
