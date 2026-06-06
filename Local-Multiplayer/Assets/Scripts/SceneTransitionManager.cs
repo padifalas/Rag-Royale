@@ -14,6 +14,7 @@ public class SceneTransitionManager : MonoBehaviour
     [Header("Next Round")]
     [SerializeField] private GameObject resultsPanel;
     [SerializeField] private GameObject nextRoundBtn;
+    private int pendingRound;
 
 
 
@@ -37,6 +38,13 @@ public class SceneTransitionManager : MonoBehaviour
     {
         resultsPanel.SetActive(true);
 
+        pendingRound = MatchData.Instance.CurrentRound + 1;
+
+    }
+
+    public void OnNextRoundPressed()
+    {
+        LoadNextRoundScene(pendingRound);
     }
 
     private void OnMatchWon(int winnerID)
@@ -54,7 +62,6 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator LoadRoundScene(int roundNumber)
     {
-        yield return new WaitForSeconds(roundWinDisplayTime);
 
         if (roundNumber < 1 || roundNumber >= MatchData.RoundScenes.Length)
         {
@@ -62,7 +69,8 @@ public class SceneTransitionManager : MonoBehaviour
             yield break;
         }
 
-        SceneManager.LoadScene(MatchData.RoundScenes[roundNumber]);
+        LevelManager.Instance.LoadScene(MatchData.RoundScenes[roundNumber]);
+
     }
 
     private IEnumerator LoadMatchResult(int winnerID)
