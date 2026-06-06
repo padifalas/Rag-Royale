@@ -304,14 +304,32 @@ public class MultiplayerPlayerController : MonoBehaviour
             horizontal * moveSpeed + Vector3.up * verticalVelocity + knockbackVelocity;
         cc.Move(finalMove * Time.deltaTime);
 
-        // Face the direction of movement — DOESNT FLIPPIN WORK
-        if (horizontal.x != 0f && characterVisualSlot != null)
+        // Face the direction of movement — WORKS NOW SIR
+        if (PlayerID == 1)
         {
-            characterVisualSlot.localScale = new Vector3(
-                Mathf.Sign(horizontal.x) * Mathf.Abs(characterVisualSlot.localScale.x),
-                characterVisualSlot.localScale.y,
-                characterVisualSlot.localScale.z
-            );
+            if (horizontal.x > 0.1f)
+            {
+                characterVisualSlot.localRotation =
+                    Quaternion.Euler(0f, 0f, 0f);
+            }
+            else if (horizontal.x < -0.1f)
+            {
+                characterVisualSlot.localRotation =
+                    Quaternion.Euler(0f, -180f, 0f);
+            }
+        }
+        else // For Player 2
+        {
+            if (horizontal.x > 0.1f)
+            {
+                characterVisualSlot.localRotation =
+                    Quaternion.Euler(0f, -180f, 0f);
+            }
+            else if (horizontal.x < -0.1f)
+            {
+                characterVisualSlot.localRotation =
+                    Quaternion.Euler(0f, 0f, 0f);
+            }
         }
     }
 

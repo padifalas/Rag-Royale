@@ -11685,8 +11685,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionManager
   roundWinDisplayTime: 2.5
   matchWinDisplayTime: 4
-  resultsPanel: {fileID: 0}
-  nextRoundBtn: {fileID: 0}
+  resultsPanel: {fileID: 848252769}
+  nextRoundBtn: {fileID: 1390460877}
 --- !u!4 &211837058
 Transform:
   m_ObjectHideFlags: 0
@@ -24191,7 +24191,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1880455354}
-  - {fileID: 848252770}
   - {fileID: 1381299062}
   - {fileID: 750098146}
   - {fileID: 729977746}
@@ -51686,12 +51685,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1390460878}
-  m_Father: {fileID: 534528285}
+  m_Father: {fileID: 1880455354}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &848252771
 MonoBehaviour:
@@ -71964,6 +71963,7 @@ RectTransform:
   - {fileID: 467047192}
   - {fileID: 2102719368}
   - {fileID: 954891760}
+  - {fileID: 848252770}
   m_Father: {fileID: 534528285}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
