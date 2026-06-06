@@ -17,10 +17,10 @@ public class KillerShotPromptUI : MonoBehaviour
 
     [Header("Per-Player Button Images")]
     [SerializeField]
-    private InputPromptImage p1ButtonPrompt;
+    private Image p1ButtonImage; //  P1's react button
 
     [SerializeField]
-    private InputPromptImage p2ButtonPrompt;
+    private Image p2ButtonImage; //  P2's  button
 
     [Header("Prompt Text")]
     [SerializeField]
@@ -101,6 +101,21 @@ public class KillerShotPromptUI : MonoBehaviour
     private Coroutine p1FeedbackCoroutine;
     private Coroutine p2FeedbackCoroutine;
 
+    private void OnEnable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered -= OnPlayerRegistered;
+    }
+
+    private void OnPlayerRegistered(int playerID, PlayerInputRegistry.DeviceType device)
+    {
+        RefreshButtonImages();
+    }
+
     private void Start()
     {
         SetActive(promptRoot, false);
@@ -153,15 +168,23 @@ public class KillerShotPromptUI : MonoBehaviour
         }
     }
 
-    // Button image swap
-
     private void RefreshButtonImages()
     {
-        p1ButtonPrompt?.SetPlayer(1);
-        p1ButtonPrompt?.Refresh();
+        if (promptData == null || PlayerInputRegistry.Instance == null)
+            return;
 
-        p2ButtonPrompt?.SetPlayer(2);
-        p2ButtonPrompt?.Refresh();
+        // React action  for P1
+        if (p1ButtonImage != null)
+        {
+            p1ButtonImage.sprite = promptData.GetSprite(promptData.react, 1);
+            SetActive(p1ButtonImage.gameObject, p1ButtonImage.sprite != null);
+        }
+
+        if (p2ButtonImage != null)
+        {
+            p2ButtonImage.sprite = promptData.GetSprite(promptData.react, 2);
+            SetActive(p2ButtonImage.gameObject, p2ButtonImage.sprite != null);
+        }
     }
 
     private IEnumerator PulseRoutine()

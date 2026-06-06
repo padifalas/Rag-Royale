@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,74 +28,50 @@ public class InputPromptImage : MonoBehaviour
     private InputPromptData promptData;
 
     private Image img;
-    private Sprite fallbackSprite;
 
-    private void Awake()
-    {
-        img = GetComponent<Image>();
-        fallbackSprite = img.sprite;
-    }
-
-    private void Start()
-    {
-        if (!TryRefresh())
-            StartCoroutine(WaitAndRefresh());
-    }
+    private void Awake() => img = GetComponent<Image>();
 
     private void OnEnable()
     {
-        if (!TryRefresh())
-            StartCoroutine(WaitAndRefresh());
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
+        TryRefresh(); // catch cases where players were already registered
     }
 
-    // -------------------------------------------------------
+    private void OnDisable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered -= OnPlayerRegistered;
+    }
 
-    public bool TryRefresh()
+    private void OnPlayerRegistered(int registeredID, PlayerInputRegistry.DeviceType device)
+    {
+        if (registeredID == playerID)
+            TryRefresh();
+    }
+
+    public void TryRefresh()
     {
         if (img == null || promptData == null)
-            return false;
-
+            return;
         if (PlayerInputRegistry.Instance == null)
-            return false;
+            return;
+        if (!PlayerInputRegistry.Instance.IsRegistered(playerID))
+            return;
 
-        var deviceType = PlayerInputRegistry.Instance.GetDeviceType(playerID);
-        InputPromptData.ActionPrompt prompt = GetPrompt();
-        if (prompt == null)
-            return false;
-
-        Sprite sprite = promptData.GetSprite(prompt, deviceType);
+        var device = PlayerInputRegistry.Instance.GetDeviceType(playerID);
+        Sprite sprite = promptData.GetSprite(GetPrompt(), device);
 
         if (sprite != null)
         {
             img.sprite = sprite;
             img.enabled = true;
-            return true;
         }
-
-        if (fallbackSprite != null)
-            img.sprite = fallbackSprite;
-
-        return false;
     }
 
-    public void Refresh() => TryRefresh();
-
-    private IEnumerator WaitAndRefresh()
+    public void SetPlayer(int id)
     {
-        float elapsed = 0f;
-        while (elapsed < 10f)
-        {
-            yield return null;
-            elapsed += Time.deltaTime;
-
-            if (TryRefresh())
-                yield break;
-        }
-
-        Debug.LogWarning($"[InputPromptImage] P{playerID} device never registered");
+        playerID = id;
+        TryRefresh();
     }
-
-
 
     private InputPromptData.ActionPrompt GetPrompt() =>
         action switch
@@ -111,10 +86,4 @@ public class InputPromptImage : MonoBehaviour
             PromptAction.Jump => promptData.jump,
             _ => null,
         };
-
-    public void SetPlayer(int id)
-    {
-        playerID = id;
-        TryRefresh();
-    }
 }

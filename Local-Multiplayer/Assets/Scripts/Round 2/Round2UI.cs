@@ -6,9 +6,7 @@ using UnityEngine.UI;
 
 public class Round2UI : MonoBehaviour
 {
-    // Inspector — Needle Count Panels
-
-    [Header("P1 Needle Panel (left side)")]
+    [Header("P1 Needle Panel")]
     [SerializeField]
     private Image p1NeedleIcon;
 
@@ -16,12 +14,12 @@ public class Round2UI : MonoBehaviour
     private TextMeshProUGUI p1NeedleCount;
 
     [SerializeField]
-    private TextMeshProUGUI p1PlayerLabel; // "PLAYER 1"
+    private TextMeshProUGUI p1PlayerLabel;
 
     [SerializeField]
     private RectTransform p1Panel;
 
-    [Header("P2 Needle Panel (right side)")]
+    [Header("P2 Needle Panel")]
     [SerializeField]
     private Image p2NeedleIcon;
 
@@ -29,7 +27,7 @@ public class Round2UI : MonoBehaviour
     private TextMeshProUGUI p2NeedleCount;
 
     [SerializeField]
-    private TextMeshProUGUI p2PlayerLabel; // "PLAYER 2"
+    private TextMeshProUGUI p2PlayerLabel;
 
     [SerializeField]
     private RectTransform p2Panel;
@@ -42,16 +40,16 @@ public class Round2UI : MonoBehaviour
     private TextMeshProUGUI pileNeedleCount;
 
     [SerializeField]
-    private TextMeshProUGUI pileLabel; // "PILE"
+    private TextMeshProUGUI pileLabel;
 
-    // Inspector — Timer
+    // ── Timer ─────────────────────────────────────────────────────────────────
 
     [Header("Timer")]
     [SerializeField]
     private TextMeshProUGUI timerText;
 
     [SerializeField]
-    private Image timerFill; // optional radial/fill bar
+    private Image timerFill;
 
     [SerializeField]
     private float timerDuration = 60f;
@@ -63,57 +61,48 @@ public class Round2UI : MonoBehaviour
     private Color timerUrgent = new Color(1f, 0.2f, 0.1f);
 
     [SerializeField]
-    private float urgentThreshold = 10f; // seconds
+    private float urgentThreshold = 10f;
 
-    // Inspector — Control Prompts
+    // ── Control Prompts (image-based) ─────────────────────────────────────────
 
     [Header("P1 Control Prompts")]
     [SerializeField]
-    private GameObject p1CollectPrompt; // shows when P1 near pile
+    private GameObject p1CollectPrompt; // root — shown when near pile
 
     [SerializeField]
-    private GameObject p1DepositPrompt; // shows when P1 near deposit
+    private Image p1CollectBtnImage; // InputPromptImage sits here
 
     [SerializeField]
-    private TextMeshProUGUI p1CollectKey; // "E / RT"
+    private GameObject p1DepositPrompt; // root — shown when near deposit
 
     [SerializeField]
-    private TextMeshProUGUI p1DepositKey; // "E / RT"
+    private Image p1DepositBtnImage;
 
     [Header("P2 Control Prompts")]
     [SerializeField]
     private GameObject p2CollectPrompt;
 
     [SerializeField]
+    private Image p2CollectBtnImage;
+
+    [SerializeField]
     private GameObject p2DepositPrompt;
 
     [SerializeField]
-    private TextMeshProUGUI p2CollectKey;
+    private Image p2DepositBtnImage;
 
+    [Header("Input Prompt Data")]
     [SerializeField]
-    private TextMeshProUGUI p2DepositKey;
+    private InputPromptData promptData; // shared ScriptableObject
 
-    [Header("Prompt Labels")]
-    [SerializeField]
-    private string collectActionLabel = "Hold  to Collect";
-
-    [SerializeField]
-    private string depositActionLabel = "Hold  to Deposit";
-
-    [SerializeField]
-    private string p1KeyLabel = "E / RT";
-
-    [SerializeField]
-    private string p2KeyLabel = "E / RT";
-
-    // Inspector — Killer Shot Banner
+    // ── Killer Shot Banner ────────────────────────────────────────────────────
 
     [Header("Killer Shot UI")]
     [SerializeField]
     private GameObject killerShotBanner;
 
     [SerializeField]
-    private TextMeshProUGUI killerShotLabel; // "NEEDLE STEAL CHANCE!"
+    private TextMeshProUGUI killerShotLabel;
 
     [SerializeField]
     private string killerShotText = "NEEDLE STEAL!";
@@ -127,6 +116,15 @@ public class Round2UI : MonoBehaviour
     [SerializeField]
     private Color bannerColorB = new Color(1f, 0.2f, 0.1f);
 
+    [Header("Killer Shot — Reaction button images")]
+    [Tooltip("Shows P1's react button inside the killer shot banner")]
+    [SerializeField]
+    private Image p1KillerShotBtnImage;
+
+    [Tooltip("Shows P2's react button inside the killer shot banner")]
+    [SerializeField]
+    private Image p2KillerShotBtnImage;
+
     [Header("Killer Shot Winner Banner")]
     [SerializeField]
     private GameObject stealResultBanner;
@@ -137,31 +135,27 @@ public class Round2UI : MonoBehaviour
     [SerializeField]
     private float stealResultDuration = 2f;
 
-    // Inspector — Floating Needle Steal Animation
-
     [Header("Needle Steal Float Animation")]
     [SerializeField]
-    private GameObject floatingNeedlePrefab; // a UI Image prefab of a needle icon
+    private GameObject floatingNeedlePrefab;
 
     [SerializeField]
-    private RectTransform floatCanvas; // the canvas rect to spawn floaters on
+    private RectTransform floatCanvas;
 
     [SerializeField]
-    private int floatNeedleCount = 3; // how many needles animate
+    private int floatNeedleCount = 3;
 
     [SerializeField]
     private float floatDuration = 0.9f;
 
     [SerializeField]
-    private float floatSpread = 60f; // pixels of random spread at source
+    private float floatSpread = 60f;
 
     [SerializeField]
-    private AnimationCurve floatCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    private AnimationCurve floatCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [SerializeField]
-    private Color floatNeedleColor = new Color(0.4f, 1f, 0.6f, 1f); // magical green
-
-    // Inspector — References
+    private Color floatNeedleColor = new Color(0.4f, 1f, 0.6f, 1f);
 
     [Header("References")]
     [SerializeField]
@@ -173,26 +167,23 @@ public class Round2UI : MonoBehaviour
     [SerializeField]
     private KillerShotManager killerShotManager;
 
-    // Private state
-
     private Coroutine bannerPulseCoroutine;
     private Coroutine stealResultCoroutine;
 
-    // Zone proximity — set by NeedleManager zone callbacks forwarded here
-    // or driven directly by CollectZone / DepositZone events
     private bool p1NearPile = false;
     private bool p2NearPile = false;
     private bool p1NearDeposit = false;
     private bool p2NearDeposit = false;
 
-    // Lifecycle
-
     private void Start()
     {
-        InitialisePromptLabels();
+        Debug.Log($"[Round2UI] Registry instance is null: {PlayerInputRegistry.Instance == null}");
         HideAllPrompts();
         HideKillerShotBanner();
         HideStealResult();
+
+        // swap all btnn images to match each player's device
+        RefreshAllPromptImages();
 
         if (needleManager != null)
         {
@@ -214,16 +205,14 @@ public class Round2UI : MonoBehaviour
             killerShotManager.OnKillerShotExpired.AddListener(HideKillerShotBanner);
         }
 
-        // Subscribe to zone events for prompt toggling
-        // These are set up via the scene's CollectZone and DepositZone objects.
-        // Wire them here or let NeedleManager forward its zone events.
         SubscribeToZones();
 
-        // Set initial displays
         UpdateNeedleDisplay(p1NeedleCount, 0);
         UpdateNeedleDisplay(p2NeedleCount, 0);
         UpdateNeedleDisplay(pileNeedleCount, needleManager != null ? needleManager.PileCount : 0);
         UpdateTimer(timerDuration);
+
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
     }
 
     private void OnDestroy()
@@ -236,33 +225,61 @@ public class Round2UI : MonoBehaviour
         }
     }
 
-    // Prompt initialisation
-
-    private void InitialisePromptLabels()
+    private void RefreshAllPromptImages()
     {
-        if (p1CollectKey != null)
-            p1CollectKey.text = p1KeyLabel;
-        if (p1DepositKey != null)
-            p1DepositKey.text = p1KeyLabel;
-        if (p2CollectKey != null)
-            p2CollectKey.text = p2KeyLabel;
-        if (p2DepositKey != null)
-            p2DepositKey.text = p2KeyLabel;
+        if (promptData == null)
+            return;
+
+        SetPromptImage(p1CollectBtnImage, promptData.collect, 1);
+        SetPromptImage(p1DepositBtnImage, promptData.collect, 1); // same key as collect
+        SetPromptImage(p2CollectBtnImage, promptData.collect, 2);
+        SetPromptImage(p2DepositBtnImage, promptData.collect, 2);
+        SetPromptImage(p1KillerShotBtnImage, promptData.react, 1);
+        SetPromptImage(p2KillerShotBtnImage, promptData.react, 2);
     }
 
-    private void HideAllPrompts()
+    private void SetPromptImage(Image img, InputPromptData.ActionPrompt prompt, int playerID)
     {
-        SetActive(p1CollectPrompt, false);
-        SetActive(p1DepositPrompt, false);
-        SetActive(p2CollectPrompt, false);
-        SetActive(p2DepositPrompt, false);
+        if (img == null || prompt == null || promptData == null)
+            return;
+
+        var registry = PlayerInputRegistry.Instance;
+        if (registry == null)
+        {
+            Debug.LogWarning($"[Round2UI] Registry is null when setting P{playerID} image");
+            return;
+        }
+
+        var device = registry.GetDeviceType(playerID);
+        Sprite sprite = promptData.GetSprite(prompt, device);
+
+        Debug.Log($"[Round2UI] P{playerID} device={device} sprite={sprite?.name ?? "NULL"}");
+
+        if (sprite != null)
+        {
+            img.sprite = sprite;
+            img.enabled = true;
+        }
     }
 
-    // Zone proximity → prompt toggling
+    private void OnEnable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
+        RefreshAllPromptImages();
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered -= OnPlayerRegistered;
+    }
+
+    private void OnPlayerRegistered(int playerID, PlayerInputRegistry.DeviceType device)
+    {
+        RefreshAllPromptImages();
+    }
 
     private void SubscribeToZones()
     {
-        // Find all zones in the scene and subscribe
         var collectZones = FindObjectsByType<CollectZone>(FindObjectsSortMode.None);
         foreach (var z in collectZones)
         {
@@ -278,18 +295,26 @@ public class Round2UI : MonoBehaviour
         }
     }
 
-    private void SetNearPile(int playerID, bool near)
+    private void HideAllPrompts()
     {
-        if (playerID == 1)
+        SetActive(p1CollectPrompt, false);
+        SetActive(p1DepositPrompt, false);
+        SetActive(p2CollectPrompt, false);
+        SetActive(p2DepositPrompt, false);
+    }
+
+    private void SetNearPile(int id, bool near)
+    {
+        if (id == 1)
             p1NearPile = near;
         else
             p2NearPile = near;
         RefreshPrompts();
     }
 
-    private void SetNearDeposit(int playerID, bool near)
+    private void SetNearDeposit(int id, bool near)
     {
-        if (playerID == 1)
+        if (id == 1)
             p1NearDeposit = near;
         else
             p2NearDeposit = near;
@@ -298,14 +323,26 @@ public class Round2UI : MonoBehaviour
 
     private void RefreshPrompts()
     {
-        // Collect prompt shows only when near the pile AND not near their deposit
-        SetActive(p1CollectPrompt, p1NearPile && !p1NearDeposit);
-        SetActive(p1DepositPrompt, p1NearDeposit && !p1NearPile);
-        SetActive(p2CollectPrompt, p2NearPile && !p2NearDeposit);
-        SetActive(p2DepositPrompt, p2NearDeposit && !p2NearPile);
-    }
+        bool showP1Collect = p1NearPile && !p1NearDeposit;
+        bool showP1Deposit = p1NearDeposit && !p1NearPile;
+        bool showP2Collect = p2NearPile && !p2NearDeposit;
+        bool showP2Deposit = p2NearDeposit && !p2NearPile;
 
-    // Needle count updates
+        SetActive(p1CollectPrompt, showP1Collect);
+        SetActive(p1DepositPrompt, showP1Deposit);
+        SetActive(p2CollectPrompt, showP2Collect);
+        SetActive(p2DepositPrompt, showP2Deposit);
+
+        // Refresh images every time visibility changes
+        if (showP1Collect)
+            SetPromptImage(p1CollectBtnImage, promptData?.collect, 1);
+        if (showP1Deposit)
+            SetPromptImage(p1DepositBtnImage, promptData?.collect, 1);
+        if (showP2Collect)
+            SetPromptImage(p2CollectBtnImage, promptData?.collect, 2);
+        if (showP2Deposit)
+            SetPromptImage(p2DepositBtnImage, promptData?.collect, 2);
+    }
 
     private void OnPileChanged(int count) => UpdateNeedleDisplay(pileNeedleCount, count);
 
@@ -329,29 +366,26 @@ public class Round2UI : MonoBehaviour
 
     private IEnumerator PanelPop(RectTransform panel)
     {
-        Vector3 original = panel.localScale;
-        Vector3 big = original * 1.15f;
+        Vector3 orig = panel.localScale;
+        Vector3 big = orig * 1.15f;
         float dur = 0.1f;
         float t = 0f;
 
         while (t < dur)
         {
             t += Time.deltaTime;
-            panel.localScale = Vector3.Lerp(original, big, t / dur);
+            panel.localScale = Vector3.Lerp(orig, big, t / dur);
             yield return null;
         }
         t = 0f;
         while (t < dur)
         {
             t += Time.deltaTime;
-            panel.localScale = Vector3.Lerp(big, original, t / dur);
+            panel.localScale = Vector3.Lerp(big, orig, t / dur);
             yield return null;
         }
-
-        panel.localScale = original;
+        panel.localScale = orig;
     }
-
-    // Timer
 
     private void OnTimerTick(float remaining) => UpdateTimer(remaining);
 
@@ -361,25 +395,22 @@ public class Round2UI : MonoBehaviour
     {
         if (timerText == null)
             return;
-
         int minutes = Mathf.FloorToInt(remaining / 60f);
         int seconds = Mathf.FloorToInt(remaining % 60f);
         timerText.text = $"{minutes:0}:{seconds:00}";
-
-        bool urgent = remaining <= urgentThreshold;
-        timerText.color = urgent ? timerUrgent : timerNormal;
-
+        timerText.color = remaining <= urgentThreshold ? timerUrgent : timerNormal;
         if (timerFill != null)
             timerFill.fillAmount = Mathf.Clamp01(remaining / timerDuration);
     }
-
-    // Killer shot banner
 
     private void ShowKillerShotBanner()
     {
         SetActive(killerShotBanner, true);
         if (killerShotLabel != null)
             killerShotLabel.text = killerShotText;
+
+        SetPromptImage(p1KillerShotBtnImage, promptData?.react, 1);
+        SetPromptImage(p2KillerShotBtnImage, promptData?.react, 2);
 
         if (bannerPulseCoroutine != null)
             StopCoroutine(bannerPulseCoroutine);
@@ -412,22 +443,16 @@ public class Round2UI : MonoBehaviour
         }
     }
 
-    // Needle steal consequence UI
-
     private void OnNeedleStolen(int winnerID)
     {
         HideKillerShotBanner();
 
-        // Determine source (loser panel) and destination (winner panel) world-to-screen positions
         RectTransform src = winnerID == 1 ? p2Panel : p1Panel;
         RectTransform dst = winnerID == 1 ? p1Panel : p2Panel;
 
-        // Show result banner
-        string winnerName = $"PLAYER {winnerID}";
         int stolen = needleManager != null ? needleManager.GetStealAmount() : 3;
-        ShowStealResult($"{winnerName} STEALS {stolen} NEEDLES!");
+        ShowStealResult($"PLAYER {winnerID} STEALS {stolen} NEEDLES!");
 
-        // Spawn floating needles
         if (floatingNeedlePrefab != null && floatCanvas != null && src != null && dst != null)
             StartCoroutine(AnimateFloatingNeedles(src, dst, stolen));
     }
@@ -437,25 +462,19 @@ public class Round2UI : MonoBehaviour
         SetActive(stealResultBanner, true);
         if (stealResultLabel != null)
             stealResultLabel.text = message;
-
         if (stealResultCoroutine != null)
             StopCoroutine(stealResultCoroutine);
         stealResultCoroutine = StartCoroutine(FadeOutStealResult());
     }
 
-    private void HideStealResult()
-    {
-        SetActive(stealResultBanner, false);
-    }
+    private void HideStealResult() => SetActive(stealResultBanner, false);
 
     private IEnumerator FadeOutStealResult()
     {
         yield return new WaitForSeconds(stealResultDuration - 0.4f);
-
         float t = 0f;
         CanvasGroup cg =
             stealResultBanner != null ? stealResultBanner.GetComponent<CanvasGroup>() : null;
-
         if (cg != null)
         {
             while (t < 0.4f)
@@ -464,32 +483,23 @@ public class Round2UI : MonoBehaviour
                 cg.alpha = Mathf.Lerp(1f, 0f, t / 0.4f);
                 yield return null;
             }
-            cg.alpha = 1f; // reset for next time
+            cg.alpha = 1f;
         }
-
         SetActive(stealResultBanner, false);
     }
 
-    // Magical floating needle animation
-
-    /// <summary>
-    /// Spawns <count> needle icons that float from the loser's panel to the winner's panel
-    /// with a slight arc and staggered timing, tinted in the magical colour.
-    /// </summary>
     private IEnumerator AnimateFloatingNeedles(RectTransform src, RectTransform dst, int count)
     {
         int spawnCount = Mathf.Min(count, floatNeedleCount);
-
         for (int i = 0; i < spawnCount; i++)
         {
             StartCoroutine(FloatOnNeedle(src, dst));
-            yield return new WaitForSeconds(0.12f); // stagger each needle
+            yield return new WaitForSeconds(0.12f);
         }
     }
 
     private IEnumerator FloatOnNeedle(RectTransform src, RectTransform dst)
     {
-        // Instantiate the needle prefab on the canvas
         GameObject needle = Instantiate(floatingNeedlePrefab, floatCanvas);
         RectTransform rt = needle.GetComponent<RectTransform>();
         Image img = needle.GetComponent<Image>();
@@ -497,11 +507,8 @@ public class Round2UI : MonoBehaviour
         if (img != null)
             img.color = floatNeedleColor;
 
-        // Convert panel anchored positions to local canvas positions
         Vector2 startPos = GetCanvasPos(src) + Random.insideUnitCircle * floatSpread;
         Vector2 endPos = GetCanvasPos(dst);
-
-        // Arc control point — midway but raised (magical arc upward)
         Vector2 midPoint = (startPos + endPos) * 0.5f + Vector2.up * 120f;
 
         float t = 0f;
@@ -510,15 +517,11 @@ public class Round2UI : MonoBehaviour
             t += Time.deltaTime / floatDuration;
             float curved = floatCurve.Evaluate(t);
 
-            // Quadratic Bezier
-            Vector2 pos =
+            rt.anchoredPosition =
                 Mathf.Pow(1 - curved, 2) * startPos
                 + 2f * (1 - curved) * curved * midPoint
                 + Mathf.Pow(curved, 2) * endPos;
 
-            rt.anchoredPosition = pos;
-
-            // Fade out in last 20%
             if (img != null)
             {
                 Color c = img.color;
@@ -526,9 +529,7 @@ public class Round2UI : MonoBehaviour
                 img.color = c;
             }
 
-            // Slight rotation for a spinning needle effect
             rt.localRotation = Quaternion.Euler(0f, 0f, curved * 360f);
-
             yield return null;
         }
 
@@ -537,30 +538,23 @@ public class Round2UI : MonoBehaviour
 
     private Vector2 GetCanvasPos(RectTransform panel)
     {
-        // Convert panel's world position to local position within floatCanvas
-        Vector3 worldPos = panel.position;
-        Vector2 screenPos;
         Camera cam = Camera.main;
+        Vector2 screenPos;
+        Canvas canvas = floatCanvas.GetComponentInParent<Canvas>();
 
-        if (floatCanvas.GetComponentInParent<Canvas>().renderMode == RenderMode.ScreenSpaceOverlay)
-        {
-            screenPos = RectTransformUtility.WorldToScreenPoint(null, worldPos);
-        }
-        else
-        {
-            screenPos = RectTransformUtility.WorldToScreenPoint(cam, worldPos);
-        }
+        screenPos =
+            canvas.renderMode == RenderMode.ScreenSpaceOverlay
+                ? RectTransformUtility.WorldToScreenPoint(null, panel.position)
+                : RectTransformUtility.WorldToScreenPoint(cam, panel.position);
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             floatCanvas,
             screenPos,
             cam,
-            out Vector2 localPoint
+            out Vector2 local
         );
-        return localPoint;
+        return local;
     }
-
-    // Utility
 
     private void SetActive(GameObject go, bool state)
     {

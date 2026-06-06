@@ -47,7 +47,10 @@ public class JoinUIManager : MonoBehaviour
 
     public void OnPlayerJoined(PlayerInput player)
     {
+        Debug.Log($"[JoinUIManager] OnPlayerJoined fired — playerIndex={player.playerIndex}"); // ADD THIS
+
         int id = player.playerIndex + 1;
+        StartCoroutine(RegisterNextFrame(id, player));
 
         PlayerInputRegistry.Instance?.RegisterPlayer(id, player);
 
@@ -64,6 +67,12 @@ public class JoinUIManager : MonoBehaviour
 
         if (p1Joined && p2Joined)
             StartCoroutine(HideAllAfterDelay());
+    }
+
+    private IEnumerator RegisterNextFrame(int id, PlayerInput player)
+    {
+        yield return null; // wait one frame for scheme to commit
+        PlayerInputRegistry.Instance?.RegisterPlayer(id, player);
     }
 
     private void ShowJoined(GameObject promptText, GameObject joinedText)
