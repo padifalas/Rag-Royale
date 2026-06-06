@@ -36,8 +36,6 @@ public class JoinUIManager : MonoBehaviour
     private bool p1Joined = false;
     private bool p2Joined = false;
 
-    //======================
-
     private void Start()
     {
         p1JoinedText.gameObject.SetActive(false);
@@ -50,6 +48,8 @@ public class JoinUIManager : MonoBehaviour
     public void OnPlayerJoined(PlayerInput player)
     {
         int id = player.playerIndex + 1;
+
+        PlayerInputRegistry.Instance?.RegisterPlayer(id, player);
 
         if (id == 1 && !p1Joined)
         {
@@ -66,8 +66,6 @@ public class JoinUIManager : MonoBehaviour
             StartCoroutine(HideAllAfterDelay());
     }
 
-    //=
-
     private void ShowJoined(GameObject promptText, GameObject joinedText)
     {
         promptText.gameObject.SetActive(false);
@@ -76,8 +74,6 @@ public class JoinUIManager : MonoBehaviour
 
     private IEnumerator HideAllAfterDelay()
     {
-        // Debug.Log($"[JoinUIManager] calling StartCountdown, manager null: {countdownManager == null}");
-
         yield return new WaitForSeconds(hideDelay);
 
         p1PromptRoot.SetActive(false);
