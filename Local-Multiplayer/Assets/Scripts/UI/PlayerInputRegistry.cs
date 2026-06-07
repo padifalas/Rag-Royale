@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,11 +13,18 @@ public class PlayerInputRegistry : MonoBehaviour
         Gamepad,
     }
 
-    private DeviceType p1Device = DeviceType.Keyboard;
-    private DeviceType p2Device = DeviceType.Gamepad;
+    public static event Action<int, DeviceType> OnPlayerRegistered;
 
+    private DeviceType p1Device = DeviceType.Gamepad;
+    private DeviceType p2Device = DeviceType.Gamepad;
     private bool p1Registered = false;
     private bool p2Registered = false;
+
+    // ── New: store actual device + scheme for re-spawning ──────────────────
+    private readonly Dictionary<int, InputDevice> _devices = new();
+    private readonly Dictionary<int, string> _controlSchemes = new();
+
+    // ───────────────────────────────────────────────────────────────────────
 
     private void Awake()
     {
@@ -28,10 +37,12 @@ public class PlayerInputRegistry : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    //
-
     public void RegisterPlayer(int playerID, PlayerInput input)
     {
+        Debug.Log(
+            $"[PlayerInputRegistry] P{playerID} scheme='{input.currentControlScheme}' devices={string.Join(",", input.devices)}"
+        );
+
         DeviceType device = DetectDevice(input);
 
         if (playerID == 1)
@@ -45,10 +56,20 @@ public class PlayerInputRegistry : MonoBehaviour
             p2Registered = true;
         }
 
-        Debug.Log($"[PlayerInputRegistry] P{playerID} registered — {device}");
+        // ── Store device + scheme ──────────────────────────────────────────
+        var inputDevice = input.devices.Count > 0 ? input.devices[0] : null;
+        if (inputDevice != null)
+            _devices[playerID] = inputDevice;
+        _controlSchemes[playerID] = input.currentControlScheme ?? "";
+        // ───────────────────────────────────────────────────────────────────
+
+        Debug.Log($"[PlayerInputRegistry] P{playerID} registered as {device}");
+        OnPlayerRegistered?.Invoke(playerID, device);
     }
 
     public DeviceType GetDeviceType(int playerID) => playerID == 1 ? p1Device : p2Device;
+
+    public bool IsRegistered(int playerID) => playerID == 1 ? p1Registered : p2Registered;
 
     public bool IsKeyboard(int playerID) => GetDeviceType(playerID) == DeviceType.Keyboard;
 
@@ -56,34 +77,36 @@ public class PlayerInputRegistry : MonoBehaviour
 
     public bool BothPlayersRegistered => p1Registered && p2Registered;
 
+    // ── New getters for RoundSpawner ───────────────────────────────────────
+    public InputDevice GetDevice(int playerID) =>
+        _devices.TryGetValue(playerID, out var d) ? d : null;
+
+    public string GetControlScheme(int playerID) =>
+        _controlSchemes.TryGetValue(playerID, out var s) ? s : "";
+
+    // ───────────────────────────────────────────────────────────────────────
+
     private DeviceType DetectDevice(PlayerInput input)
     {
         if (input == null)
-            return DeviceType.Keyboard;
+            return DeviceType.Gamepad;
 
-        // currentControlScheme is set by PlayerInputManager based on the
-        // device the player used to join
         string scheme = input.currentControlScheme ?? "";
-
-        if (scheme.Contains("Keyboard") || scheme.Contains("keyboard"))
+        if (scheme.Contains("Keyboard", StringComparison.OrdinalIgnoreCase))
             return DeviceType.Keyboard;
         if (
-            scheme.Contains("Gamepad")
-            || scheme.Contains("gamepad")
-            || scheme.Contains("Controller")
-            || scheme.Contains("controller")
+            scheme.Contains("Gamepad", StringComparison.OrdinalIgnoreCase)
+            || scheme.Contains("Controller", StringComparison.OrdinalIgnoreCase)
         )
             return DeviceType.Gamepad;
 
-        // jus in case other font work... fallback: inspect active devices
-        foreach (var device in input.devices)
+        foreach (var d in input.devices)
         {
-            if (device is Keyboard)
+            if (d is Keyboard)
                 return DeviceType.Keyboard;
-            if (device is Gamepad)
+            if (d is Gamepad)
                 return DeviceType.Gamepad;
         }
-
-        return DeviceType.Keyboard; // safe default
+        return DeviceType.Gamepad;
     }
 }

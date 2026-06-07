@@ -203,6 +203,21 @@ public class KillerShotManager : MonoBehaviour
 
     private void BeginPhase(int playerID)
     {
+        if (!this)
+        {
+            Debug.LogWarning(
+                "[KillerShotManager] BeginPhase called on destroyed object; ignoring."
+            );
+            return;
+        }
+        if (!isActiveAndEnabled)
+        {
+            Debug.LogWarning(
+                "[KillerShotManager] BeginPhase called on inactive manager; ignoring."
+            );
+            return;
+        }
+
         killerShotActive = true;
         reactionWindowOpen = false;
         triggeringPlayerID = playerID;

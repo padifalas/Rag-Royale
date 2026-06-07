@@ -73157,7 +73157,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1646647429
 RectTransform:
   m_ObjectHideFlags: 0
@@ -73191,8 +73191,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.34371567, g: 1, b: 0, a: 0.392}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.34371567, g: 1, b: 0, a: 0}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -79902,8 +79902,8 @@ MonoBehaviour:
   promptRoot: {fileID: 1800493856}
   promptText: {fileID: 870793187}
   promptBackground: {fileID: 864118324}
-  p1ButtonPrompt: {fileID: 864118326}
-  p2ButtonPrompt: {fileID: 2128455125}
+  p1ButtonImage: {fileID: 0}
+  p2ButtonImage: {fileID: 0}
   p1PromptLabel: REACT!
   p2PromptLabel: REACT!
   bothPromptLabel: REACT!
@@ -79924,7 +79924,7 @@ MonoBehaviour:
   colourEarly: {r: 1, g: 0, b: 0, a: 1}
   colourLate: {r: 1, g: 0.5, b: 0, a: 1}
   colourPerfect: {r: 0.2, g: 1, b: 0.4, a: 1}
-  promptData: {fileID: 0}
+  promptData: {fileID: 11400000, guid: 41c8dc0a079505b4797b45303da492ae, type: 2}
   killerShotManager: {fileID: 277316810}
 --- !u!1 &1804249205
 GameObject:
@@ -101844,6 +101844,10 @@ PrefabInstance:
     - target: {fileID: 1053217531048873542, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
       propertyPath: m_Name
       value: <<<---JoinUI--->>>
+      objectReference: {fileID: 0}
+    - target: {fileID: 1053217531048873542, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5433390857568393793, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
       propertyPath: m_Pivot.x

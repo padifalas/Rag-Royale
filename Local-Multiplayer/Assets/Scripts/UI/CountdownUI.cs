@@ -48,7 +48,15 @@ public class CountdownUI : MonoBehaviour
 
         if (countdownManager == null)
         {
-            Debug.LogWarning("[CountdownUI] CountdownManager not assigned in inspector");
+            Debug.Log(
+                "[CountdownUI] CountdownManager not assigned in inspector, searching for it..."
+            );
+            countdownManager = FindFirstObjectByType<CountdownManager>();
+        }
+
+        if (countdownManager == null)
+        {
+            Debug.LogWarning("[CountdownUI] CountdownManager not found anywhere in scene");
             return;
         }
 
@@ -56,7 +64,7 @@ public class CountdownUI : MonoBehaviour
         countdownManager.OnCountdownStep.AddListener(DisplayStep);
         countdownManager.OnCountdownFinished.AddListener(HidePanel);
 
-        Debug.Log($"[CountdownUI] countdownManager assigned: {countdownManager != null}");
+        Debug.Log($"[CountdownUI] Successfully subscribed to CountdownManager events");
     }
 
     private void ShowPanel()

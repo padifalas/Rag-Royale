@@ -12,6 +12,28 @@ public class Round3UI : MonoBehaviour
     [SerializeField]
     private KillerShotManager killerShotManager;
 
+    [Header("Input Prompt Data")]
+    [SerializeField]
+    private InputPromptData promptData;
+
+    [Header("Throw Button Images")]
+    [Tooltip("Image showing P1's throw button (Q / LT)")]
+    [SerializeField]
+    private Image p1ThrowBtnImage;
+
+    [Tooltip("Image showing P2's throw button (Q / LT)")]
+    [SerializeField]
+    private Image p2ThrowBtnImage;
+
+    [Header("Killer Shot React Button Images")]
+    [Tooltip("Image showing P1's react button inside the killer shot panel")]
+    [SerializeField]
+    private Image p1ReactBtnImage;
+
+    [Tooltip("Image showing P2's react button inside the killer shot panel")]
+    [SerializeField]
+    private Image p2ReactBtnImage;
+
     [Header("Ammo — P1")]
     [SerializeField]
     private TextMeshProUGUI p1AmmoLabel;
@@ -63,10 +85,10 @@ public class Round3UI : MonoBehaviour
 
     [Header("Hit Flash Overlays")]
     [SerializeField]
-    private Image p1HitFlash; // left-side overlay (P1 took damage)
+    private Image p1HitFlash;
 
     [SerializeField]
-    private Image p2HitFlash; // right-side overlay (P2 took damage)
+    private Image p2HitFlash;
 
     [SerializeField]
     private Color normalHitFlashColor = new Color(1f, 0.1f, 0.1f, 0.45f);
@@ -96,7 +118,7 @@ public class Round3UI : MonoBehaviour
     [SerializeField]
     private Color killerShotUrgentColor = new Color(1f, 0.15f, 0.1f);
 
-    [Header("Exhausted Banner")]
+    [Header("Exhausted Banners")]
     [SerializeField]
     private GameObject p1ExhaustedBanner;
 
@@ -126,6 +148,9 @@ public class Round3UI : MonoBehaviour
         SetAlpha(p1HitFlash, 0f);
         SetAlpha(p2HitFlash, 0f);
 
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
+        RefreshAllPromptImages();
+
         if (throwSystem != null)
         {
             throwSystem.OnAmmoChanged.AddListener(OnAmmoChanged);
@@ -143,7 +168,6 @@ public class Round3UI : MonoBehaviour
         }
 
         NeedleProjectile.OnProjectileHit += OnProjectileHit;
-
         StartCoroutine(InitAmmoNextFrame());
     }
 
@@ -172,7 +196,6 @@ public class Round3UI : MonoBehaviour
     {
         if (!playersResolved)
             TryResolveHealth();
-
         if (playersResolved)
             UpdateHpBars();
 
@@ -185,16 +208,60 @@ public class Round3UI : MonoBehaviour
                 killerShotManager.GetWindowTimeRemaining() / killerShotManager.GetWindowDuration()
             );
             killerShotTimerSlider.value = t;
-
             if (killerShotFill != null)
                 killerShotFill.color = Color.Lerp(killerShotUrgentColor, killerShotReadyColor, t);
         }
     }
 
+    private void RefreshAllPromptImages()
+    {
+        if (promptData == null)
+            return;
+
+        SetPromptImage(p1ThrowBtnImage, promptData.throwAction, 1);
+        SetPromptImage(p2ThrowBtnImage, promptData.throwAction, 2);
+        SetPromptImage(p1ReactBtnImage, promptData.react, 1);
+        SetPromptImage(p2ReactBtnImage, promptData.react, 2);
+    }
+
+    private void SetPromptImage(Image img, InputPromptData.ActionPrompt prompt, int playerID)
+    {
+        if (img == null || prompt == null || promptData == null)
+            return;
+
+        var registry = PlayerInputRegistry.Instance;
+        var device =
+            registry != null
+                ? registry.GetDeviceType(playerID)
+                : PlayerInputRegistry.DeviceType.Keyboard;
+
+        Sprite sprite = promptData.GetSprite(prompt, device);
+        if (sprite != null)
+        {
+            img.sprite = sprite;
+            img.enabled = true;
+        }
+    }
+
+    private void OnEnable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered += OnPlayerRegistered;
+        RefreshAllPromptImages();
+    }
+
+    private void OnDisable()
+    {
+        PlayerInputRegistry.OnPlayerRegistered -= OnPlayerRegistered;
+    }
+
+    private void OnPlayerRegistered(int playerID, PlayerInputRegistry.DeviceType device)
+    {
+        RefreshAllPromptImages();
+    }
+
     private IEnumerator InitAmmoNextFrame()
     {
         yield return null;
-
         if (throwSystem == null)
             yield break;
 
@@ -213,16 +280,11 @@ public class Round3UI : MonoBehaviour
         pips = new Image[0];
         if (root == null || ammoPipPrefab == null)
             return;
-
         foreach (Transform child in root)
             Destroy(child.gameObject);
-
         pips = new Image[count];
         for (int i = 0; i < count; i++)
-        {
-            GameObject go = Instantiate(ammoPipPrefab, root);
-            pips[i] = go.GetComponent<Image>();
-        }
+            pips[i] = Instantiate(ammoPipPrefab, root).GetComponent<Image>();
     }
 
     private void OnAmmoChanged(int playerID, int newAmmo)
@@ -233,7 +295,7 @@ public class Round3UI : MonoBehaviour
 
     private void RefreshAmmoLabel(int playerID, int ammo)
     {
-        TextMeshProUGUI label = playerID == 1 ? p1AmmoLabel : p2AmmoLabel;
+        var label = playerID == 1 ? p1AmmoLabel : p2AmmoLabel;
         if (label != null)
             label.text = ammo.ToString();
     }
@@ -241,15 +303,12 @@ public class Round3UI : MonoBehaviour
     private void RefreshPips(int playerID, int ammo)
     {
         Image[] pips = playerID == 1 ? p1Pips : p2Pips;
-        int maxAmt = playerID == 1 ? p1MaxAmmo : p2MaxAmmo;
         if (pips == null)
             return;
-
         for (int i = 0; i < pips.Length; i++)
         {
             if (pips[i] == null)
                 continue;
-            // Pips filled from left; remaining pips dim/grey
             pips[i].color = i < ammo ? Color.white : new Color(0.3f, 0.3f, 0.3f, 0.4f);
         }
     }
@@ -284,8 +343,7 @@ public class Round3UI : MonoBehaviour
             fill.color = Color.Lerp(
                 hpDangerColor,
                 hpHealthyColor,
-                Mathf.InverseLerp(0f, hpDangerThreshold, ratio)
-                    * (ratio > hpDangerThreshold ? 1f : ratio / hpDangerThreshold)
+                ratio > hpDangerThreshold ? 1f : ratio / hpDangerThreshold
             );
     }
 
@@ -293,15 +351,13 @@ public class Round3UI : MonoBehaviour
     {
         Image overlay = hitPlayerID == 1 ? p1HitFlash : p2HitFlash;
         Color color = isPower ? powerHitFlashColor : normalHitFlashColor;
-        ref Coroutine routine = ref (
-            hitPlayerID == 1 ? ref p1FlashCoroutine : ref p2FlashCoroutine
-        );
+        ref Coroutine r = ref (hitPlayerID == 1 ? ref p1FlashCoroutine : ref p2FlashCoroutine);
 
         if (overlay == null)
             return;
-        if (routine != null)
-            StopCoroutine(routine);
-        routine = StartCoroutine(HitFlashRoutine(overlay, color));
+        if (r != null)
+            StopCoroutine(r);
+        r = StartCoroutine(HitFlashRoutine(overlay, color));
     }
 
     private IEnumerator HitFlashRoutine(Image overlay, Color color)
@@ -313,27 +369,30 @@ public class Round3UI : MonoBehaviour
         while (elapsed < hitFlashDuration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = elapsed / hitFlashDuration;
             Color c = color;
-            c.a = Mathf.Lerp(color.a, 0f, t * t);
+            c.a = Mathf.Lerp(
+                color.a,
+                0f,
+                (elapsed / hitFlashDuration) * (elapsed / hitFlashDuration)
+            );
             overlay.color = c;
             yield return null;
         }
-
         overlay.gameObject.SetActive(false);
     }
 
     private void OnPowerThrowReady(int playerID)
     {
-        GameObject panel = playerID == 1 ? p1PowerThrowPanel : p2PowerThrowPanel;
-        SetActive(panel, true);
+        SetActive(playerID == 1 ? p1PowerThrowPanel : p2PowerThrowPanel, true);
+        // Refresh throw button image — it may pulse or change colour contextually
+        if (playerID == 1)
+            SetPromptImage(p1ThrowBtnImage, promptData?.throwAction, 1);
+        else
+            SetPromptImage(p2ThrowBtnImage, promptData?.throwAction, 2);
     }
 
-    private void OnPowerThrowUsed(int playerID)
-    {
-        GameObject panel = playerID == 1 ? p1PowerThrowPanel : p2PowerThrowPanel;
-        SetActive(panel, false);
-    }
+    private void OnPowerThrowUsed(int playerID) =>
+        SetActive(playerID == 1 ? p1PowerThrowPanel : p2PowerThrowPanel, false);
 
     private void PulsePowerIndicator(GameObject panel)
     {
@@ -343,11 +402,8 @@ public class Round3UI : MonoBehaviour
         panel.transform.localScale = Vector3.one * s;
     }
 
-    private void OnPlayerExhausted(int playerID)
-    {
-        GameObject banner = playerID == 1 ? p1ExhaustedBanner : p2ExhaustedBanner;
-        SetActive(banner, true);
-    }
+    private void OnPlayerExhausted(int playerID) =>
+        SetActive(playerID == 1 ? p1ExhaustedBanner : p2ExhaustedBanner, true);
 
     private void OnKillerShotStarted(int triggeringPlayerID)
     {
@@ -357,10 +413,11 @@ public class Round3UI : MonoBehaviour
         if (killerShotTimerSlider != null)
             killerShotTimerSlider.value = 1f;
         if (killerShotLabel != null)
-        {
             killerShotLabel.text =
                 triggeringPlayerID == 0 ? "KILLER SHOT!" : $"P{triggeringPlayerID} KILLER SHOT!";
-        }
+
+        SetPromptImage(p1ReactBtnImage, promptData?.react, 1);
+        SetPromptImage(p2ReactBtnImage, promptData?.react, 2);
     }
 
     private void OnKillerShotEnded()
@@ -369,15 +426,10 @@ public class Round3UI : MonoBehaviour
         SetActive(killerShotPanel, false);
     }
 
-    private void OnKillerShotWinner(int winnerID)
-    {
+    private void OnKillerShotWinner(int winnerID) =>
         Debug.Log($"[Round3UI] P{winnerID} won the killer shot reaction.");
-    }
 
-    private void OnEarlyPress(int playerID)
-    {
-        Debug.Log($"[Round3UI] P{playerID} pressed EARLY.");
-    }
+    private void OnEarlyPress(int playerID) => Debug.Log($"[Round3UI] P{playerID} pressed EARLY.");
 
     private static void SetActive(GameObject go, bool active)
     {

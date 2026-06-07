@@ -90,10 +90,30 @@ public class NeedleManager : MonoBehaviour
         PileCount = startingPileCount;
         OnPileCountChanged?.Invoke(PileCount);
         WireZones();
+
+        if (roundTimer == null)
+        {
+            roundTimer = FindFirstObjectByType<RoundTimer>();
+            Debug.Log(
+                "[NeedleManager] Runtime lookup for RoundTimer: "
+                    + (roundTimer != null ? "found" : "missing")
+            );
+        }
         if (roundTimer != null)
             roundTimer.OnTimerExpired.AddListener(CompareAndDecideWinner);
+        else
+            Debug.LogWarning("[NeedleManager] No RoundTimer assigned or found.");
+
+        if (killerShotManager == null)
+        {
+            killerShotManager = FindFirstObjectByType<KillerShotManager>();
+            Debug.Log(
+                "[NeedleManager] Runtime lookup for KillerShotManager: "
+                    + (killerShotManager != null ? "found" : "missing")
+            );
+        }
         if (killerShotManager != null)
-            killerShotManager.OnKillerShotWinner.AddListener(OnKillerShotWon);
+            SetKillerShotManager(killerShotManager);
     }
 
     private void Update()
@@ -129,6 +149,8 @@ public class NeedleManager : MonoBehaviour
     private void OnDestroy()
     {
         UnwireZones();
+        if (roundTimer != null)
+            roundTimer.OnTimerExpired.RemoveListener(CompareAndDecideWinner);
         if (killerShotManager != null)
             killerShotManager.OnKillerShotWinner.RemoveListener(OnKillerShotWon);
     }
@@ -286,7 +308,7 @@ public class NeedleManager : MonoBehaviour
         {
             killerShot1Triggered = true;
             currentKillerShotLevel = 1;
-            killerShotManager?.ActivateKillerShotForRound2();
+            TryActivateKillerShot();
             OnKillerShotConditionMet?.Invoke(1);
         }
 
@@ -294,9 +316,48 @@ public class NeedleManager : MonoBehaviour
         {
             killerShot2Triggered = true;
             currentKillerShotLevel = 2;
-            killerShotManager?.ActivateKillerShotForRound2();
+            TryActivateKillerShot();
             OnKillerShotConditionMet?.Invoke(2);
         }
+    }
+
+    private void TryActivateKillerShot()
+    {
+        if (killerShotManager == null)
+        {
+            killerShotManager = FindFirstObjectByType<KillerShotManager>();
+            Debug.Log(
+                "[NeedleManager] Runtime lookup for KillerShotManager during killer shot trigger: "
+                    + (killerShotManager != null ? "found" : "missing")
+            );
+        }
+
+        if (killerShotManager != null)
+        {
+            killerShotManager.ActivateKillerShotForRound2();
+            SetKillerShotManager(killerShotManager); // Ensure subscription is active
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[NeedleManager] KillerShotManager is missing when trying to activate Round 2 killer shot."
+            );
+        }
+    }
+
+    /// <summary>
+    /// Injects the KillerShotManager and ensures event subscription.
+    /// </summary>
+    public void SetKillerShotManager(KillerShotManager manager)
+    {
+        // Cleanup old reference if it exists
+        if (killerShotManager != null)
+            killerShotManager.OnKillerShotWinner.RemoveListener(OnKillerShotWon);
+
+        killerShotManager = manager;
+
+        if (killerShotManager != null)
+            killerShotManager.OnKillerShotWinner.AddListener(OnKillerShotWon);
     }
 
     private void OnKillerShotWon(int winnerID)
@@ -412,6 +473,18 @@ public class NeedleManager : MonoBehaviour
             : P2NeedleCount > P1NeedleCount ? 2
             : 0;
         OnRoundWinner?.Invoke(winner);
+
+        if (FindFirstObjectByType<Round2Manager>() == null)
+        {
+            var roundManager = FindFirstObjectByType<RoundManager>();
+            if (roundManager != null)
+            {
+                Debug.Log(
+                    "[NeedleManager] No Round2Manager present; forcing round end through RoundManager."
+                );
+                roundManager.Debug_ForceEndRound(winner == 0 ? 1 : winner);
+            }
+        }
     }
 
     private void SaveToMatchData()

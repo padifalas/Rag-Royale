@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class PlayerArmMarker : MonoBehaviour
 {
-    public int             PlayerID;
-    public ParticleSystem  StringTrail;
-
+    public int PlayerID;
+    public ParticleSystem StringTrail;
 
     private Renderer[] renderers;
 
@@ -15,7 +14,14 @@ public class PlayerArmMarker : MonoBehaviour
 
     public void SetArmVisible(bool visible)
     {
-        foreach (var r in renderers)
+        // Some renderer references may have been destroyed; guard against that to avoid
+        // MissingReferenceException during runtime (e.g., editor object destroy).
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            var r = renderers[i];
+            if (r == null)
+                continue;
             r.enabled = visible;
+        }
     }
 }

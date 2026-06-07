@@ -2770,7 +2770,7 @@ GameObject:
   - component: {fileID: 277316808}
   - component: {fileID: 277316807}
   - component: {fileID: 277316814}
-  - component: {fileID: 277316809}
+  - component: {fileID: 277316815}
   m_Layer: 0
   m_Name: <<<---GameManager--->>>
   m_TagString: Untagged
@@ -2793,11 +2793,11 @@ MonoBehaviour:
   m_NotificationBehavior: 2
   m_MaxPlayerCount: 2
   m_AllowJoining: 1
-  m_JoinBehavior: 0
+  m_JoinBehavior: 2
   m_PlayerJoinedEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 277316809}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: JoinUIManager, Assembly-CSharp
         m_MethodName: OnPlayerJoined
         m_Mode: 0
@@ -2851,26 +2851,6 @@ Transform:
   - {fileID: 1324847945}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &277316809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 890c07e16e11b49479de696f641fb6f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JoinUIManager
-  p1PromptRoot: {fileID: 989009523}
-  p1PromptText: {fileID: 989009522}
-  p1JoinedText: {fileID: 989009521}
-  p2PromptRoot: {fileID: 989009520}
-  p2PromptText: {fileID: 989009519}
-  p2JoinedText: {fileID: 989009518}
-  hideDelay: 1.5
-  countdownManager: {fileID: 1006245923}
 --- !u!114 &277316814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2884,6 +2864,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuInputManager
   menuOpenCloseAction: {fileID: 3906513150703437070, guid: c72fde7d841ad85409177be57f718a6a, type: 3}
+--- !u!114 &277316815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277316806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba92b7a1130dff247a30743b4e5ac397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputRegistry
 --- !u!1001 &280764496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11364,6 +11356,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ___---JoinUI---___
       objectReference: {fileID: 0}
+    - target: {fileID: 1053217531048873542, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5433390857568393793, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11452,36 +11448,6 @@ PrefabInstance:
 --- !u!224 &989009517 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5433390857568393793, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009518 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 541818934014981307, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009519 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3442677272745685714, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009520 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5654900125734959390, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009521 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6715059936445063101, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009522 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6509807734820142972, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
-  m_PrefabInstance: {fileID: 989009516}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &989009523 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8645632253227927549, guid: d3866e18cf162f242ad508be16e2abfa, type: 3}
   m_PrefabInstance: {fileID: 989009516}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1002944906
@@ -14279,6 +14245,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Round3UI
   throwSystem: {fileID: 637136518}
   killerShotManager: {fileID: 1743650113}
+  promptData: {fileID: 0}
+  p1ThrowBtnImage: {fileID: 0}
+  p2ThrowBtnImage: {fileID: 0}
+  p1ReactBtnImage: {fileID: 0}
+  p2ReactBtnImage: {fileID: 0}
   p1AmmoLabel: {fileID: 722124937}
   p1AmmoPipRoot: {fileID: 0}
   ammoPipPrefab: {fileID: 0}
@@ -21804,6 +21775,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionManager
   roundWinDisplayTime: 2.5
   matchWinDisplayTime: 4
+  resultsPanel: {fileID: 0}
+  nextRoundBtn: {fileID: 0}
 --- !u!4 &1961155299
 Transform:
   m_ObjectHideFlags: 0
