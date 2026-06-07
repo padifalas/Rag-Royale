@@ -23,6 +23,14 @@ public class Round2Manager : MonoBehaviour
     private void Awake()
     {
         roundManager = GetComponent<RoundManager>();
+        if (killerShotManager == null)
+        {
+            killerShotManager = FindFirstObjectByType<KillerShotManager>();
+            Debug.Log(
+                "[Round2Manager] Found KillerShotManager at runtime: "
+                    + (killerShotManager != null ? "success" : "failed")
+            );
+        }
         if (killerShotManager != null)
             killerShotManager.SetRound(2);
     }
@@ -34,11 +42,43 @@ public class Round2Manager : MonoBehaviour
         // Crossfade to Round 2 music as soon as the scene loads
         AudioManager.Instance?.CrossfadeToRound(2);
 
+        // If countdownManager not assigned in inspector, find it at runtime
+        if (countdownManager == null)
+        {
+            countdownManager = FindFirstObjectByType<CountdownManager>();
+            Debug.Log(
+                "[Round2Manager] Found CountdownManager at runtime: "
+                    + (countdownManager != null ? "success" : "failed")
+            );
+        }
+
         if (countdownManager != null)
             countdownManager.OnCountdownFinished.AddListener(OnCountdownFinished);
+        else
+            Debug.LogWarning("[Round2Manager] No CountdownManager found!");
+
+        if (roundTimer == null)
+        {
+            roundTimer = FindFirstObjectByType<RoundTimer>();
+            Debug.Log(
+                "[Round2Manager] Found RoundTimer at runtime: "
+                    + (roundTimer != null ? "success" : "failed")
+            );
+        }
 
         if (roundTimer != null)
             roundTimer.OnTimerExpired.AddListener(OnTimerExpired);
+        else
+            Debug.LogWarning("[Round2Manager] No RoundTimer found!");
+
+        if (needleManager == null)
+        {
+            needleManager = FindFirstObjectByType<NeedleManager>();
+            Debug.Log(
+                "[Round2Manager] Found NeedleManager at runtime: "
+                    + (needleManager != null ? "success" : "failed")
+            );
+        }
 
         if (needleManager != null)
         {
@@ -47,11 +87,19 @@ public class Round2Manager : MonoBehaviour
                 AudioManager.Instance?.PlayNeedleStolen()
             );
         }
+        else
+        {
+            Debug.LogWarning("[Round2Manager] No NeedleManager found!");
+        }
 
         if (killerShotManager != null)
         {
             killerShotManager.OnKillerShotPhaseStarted.AddListener(_ => PauseTimer());
             killerShotManager.OnKillerShotPhaseEnded.AddListener(ResumeTimer);
+        }
+        else
+        {
+            Debug.LogWarning("[Round2Manager] No KillerShotManager found!");
         }
     }
 

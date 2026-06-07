@@ -32,6 +32,7 @@ public class RoundManager : MonoBehaviour
     private bool playersResolved = false;
     private bool roundStarted = false;
 
+    private RoundTimer roundTimerInstance;
     private PlayerHealth p1Health;
     private PlayerHealth p2Health;
     private MultiplayerPlayerController p1Controller;
@@ -94,6 +95,10 @@ public class RoundManager : MonoBehaviour
     private void TryResolvePlayerReferences()
     {
         var controllers = FindObjectsByType<MultiplayerPlayerController>(FindObjectsSortMode.None);
+        Debug.Log(
+            $"[RoundManager] TryResolvePlayerReferences: Found {controllers.Length} controllers in scene."
+        );
+
         PlayerHealth found1 = null,
             found2 = null;
 
@@ -112,7 +117,12 @@ public class RoundManager : MonoBehaviour
         }
 
         if (found1 == null || found2 == null)
+        {
+            Debug.Log(
+                $"[RoundManager] Still waiting for players... P1:{(found1 != null ? "found" : "missing")} P2:{(found2 != null ? "found" : "missing")}"
+            );
             return;
+        }
 
         p1Health = found1;
         p2Health = found2;
@@ -121,6 +131,7 @@ public class RoundManager : MonoBehaviour
         p2Health.OnPlayerDefeated.AddListener(() => OnPlayerDefeated(2));
 
         playersResolved = true;
+        Debug.Log("[RoundManager] Players resolved! Starting BeginRound.");
     }
 
     private IEnumerator BeginRound()
@@ -128,12 +139,61 @@ public class RoundManager : MonoBehaviour
         OnScoreUpdated?.Invoke(P1RoundWins, P2RoundWins);
         OnRoundStarted?.Invoke(CurrentRound);
 
+        // ensure we have a scene-local CountdownManager (some scenes don't wire the serialized reference)
+        if (countdownManager == null)
+        {
+            countdownManager = FindFirstObjectByType<CountdownManager>();
+            if (countdownManager == null)
+                Debug.LogWarning("[RoundManager] No CountdownManager found in scene.");
+            else
+                Debug.Log("[RoundManager] Found CountdownManager at runtime.");
+        }
+
         if (countdownManager != null)
         {
+            if (!countdownManager.gameObject.activeInHierarchy)
+            {
+                Debug.LogWarning("[RoundManager] CountdownManager is inactive, activating it.");
+                countdownManager.gameObject.SetActive(true);
+            }
+            if (!countdownManager.enabled)
+            {
+                Debug.LogWarning(
+                    "[RoundManager] CountdownManager script is disabled, enabling it."
+                );
+                countdownManager.enabled = true;
+            }
+
+            countdownManager.ResetCountdown(); // Reset the countdown flag for this round
             countdownManager.StartCountdown();
             bool done = false;
             countdownManager.OnCountdownFinished.AddListener(() => done = true);
             yield return new WaitUntil(() => done);
+
+            if (CurrentRound >= 2)
+            {
+                var roundTimer = FindFirstObjectByType<RoundTimer>();
+                if (roundTimer != null)
+                {
+                    if (roundTimerInstance != null)
+                    {
+                        roundTimerInstance.OnTimerExpired.RemoveListener(OnRoundTimerExpired);
+                    }
+
+                    roundTimerInstance = roundTimer;
+                    roundTimer.OnTimerExpired.AddListener(OnRoundTimerExpired);
+
+                    if (!roundTimer.IsRunning)
+                    {
+                        Debug.Log($"[RoundManager] Starting RoundTimer for Round {CurrentRound}.");
+                        roundTimer.StartTimer();
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("[RoundManager] No RoundTimer found for timer-driven round end.");
+                }
+            }
         }
 
         roundOver = false;
@@ -188,6 +248,21 @@ public class RoundManager : MonoBehaviour
     {
         yield return new WaitForSeconds(roundEndDelay);
         OnMatchWon?.Invoke(winnerID);
+    }
+
+    private void OnRoundTimerExpired()
+    {
+        if (CurrentRound != 2)
+            return;
+
+        var needleManager = FindFirstObjectByType<NeedleManager>();
+        if (needleManager != null)
+        {
+            needleManager.CompareAndDecideWinner();
+            return;
+        }
+
+        Debug.LogWarning("[RoundManager] Round timer expired but NeedleManager was not found.");
     }
 
     public void Debug_ForceEndRound(int winnerID) => EndRound(winnerID);

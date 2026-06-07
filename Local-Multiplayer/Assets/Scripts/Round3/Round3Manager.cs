@@ -40,11 +40,25 @@ public class Round3Manager : MonoBehaviour
     {
         DisableCombat();
 
+        // If countdownManager not assigned in inspector, find it at runtime
+        if (countdownManager == null)
+        {
+            countdownManager = FindFirstObjectByType<CountdownManager>();
+            Debug.Log(
+                "[Round3Manager] Found CountdownManager at runtime: "
+                    + (countdownManager != null ? "success" : "failed")
+            );
+        }
+
         if (countdownManager != null)
             countdownManager.OnCountdownFinished.AddListener(OnCountdownFinished);
+        else
+            Debug.LogWarning("[Round3Manager] No CountdownManager found!");
 
         if (roundTimer != null)
             roundTimer.OnTimerExpired.AddListener(DecideWinner);
+        else
+            Debug.LogWarning("[Round3Manager] No RoundTimer assigned!");
 
         if (throwSystem != null)
         {

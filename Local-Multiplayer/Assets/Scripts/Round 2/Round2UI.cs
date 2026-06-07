@@ -253,7 +253,7 @@ public class Round2UI : MonoBehaviour
         var device = registry.GetDeviceType(playerID);
         Sprite sprite = promptData.GetSprite(prompt, device);
 
-        Debug.Log($"[Round2UI] P{playerID} device={device} sprite={sprite?.name ?? "NULL"}");
+        // Debug.Log($"[Round2UI] P{playerID} device={device} sprite={sprite?.name ?? "NULL"}");
 
         if (sprite != null)
         {
