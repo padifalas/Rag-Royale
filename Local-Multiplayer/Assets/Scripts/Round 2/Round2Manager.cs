@@ -23,24 +23,12 @@ public class Round2Manager : MonoBehaviour
     private void Awake()
     {
         roundManager = GetComponent<RoundManager>();
-        if (killerShotManager == null)
-        {
-            killerShotManager = FindFirstObjectByType<KillerShotManager>();
-            Debug.Log(
-                "[Round2Manager] Found KillerShotManager at runtime: "
-                    + (killerShotManager != null ? "success" : "failed")
-            );
-        }
-        if (killerShotManager != null)
-            killerShotManager.SetRound(2);
     }
 
     private void Start()
     {
+        ResolveManagers();
         DisableCombat();
-
-        // Crossfade to Round 2 music as soon as the scene loads
-        AudioManager.Instance?.CrossfadeToRound(2);
 
         // If countdownManager not assigned in inspector, find it at runtime
         if (countdownManager == null)
@@ -72,13 +60,7 @@ public class Round2Manager : MonoBehaviour
             Debug.LogWarning("[Round2Manager] No RoundTimer found!");
 
         if (needleManager == null)
-        {
             needleManager = FindFirstObjectByType<NeedleManager>();
-            Debug.Log(
-                "[Round2Manager] Found NeedleManager at runtime: "
-                    + (needleManager != null ? "success" : "failed")
-            );
-        }
 
         if (needleManager != null)
         {
@@ -86,6 +68,10 @@ public class Round2Manager : MonoBehaviour
             needleManager.OnNeedleStolen.AddListener(_ =>
                 AudioManager.Instance?.PlayNeedleStolen()
             );
+
+            // Inject and subscribe the needle manager to the killer shot manager
+            if (killerShotManager != null)
+                needleManager.SetKillerShotManager(killerShotManager);
         }
         else
         {
@@ -101,6 +87,25 @@ public class Round2Manager : MonoBehaviour
         {
             Debug.LogWarning("[Round2Manager] No KillerShotManager found!");
         }
+
+        // Crossfade to Round 2 music as soon as the scene loads
+        AudioManager.Instance?.CrossfadeToRound(2);
+    }
+
+    private void ResolveManagers()
+    {
+        if (killerShotManager == null)
+            killerShotManager = FindFirstObjectByType<KillerShotManager>();
+
+        if (killerShotManager != null)
+        {
+            killerShotManager.SetRound(2);
+            Debug.Log("[Round2Manager] KillerShotManager resolved and set to Round 2.");
+        }
+        else
+            Debug.LogError(
+                "[Round2Manager] KillerShotManager NOT FOUND in scene! Killer shots will not fire."
+            );
     }
 
     private void OnCountdownFinished() => roundTimer?.StartTimer();

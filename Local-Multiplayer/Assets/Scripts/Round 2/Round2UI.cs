@@ -185,6 +185,9 @@ public class Round2UI : MonoBehaviour
         // swap all btnn images to match each player's device
         RefreshAllPromptImages();
 
+        if (needleManager == null)
+            needleManager = FindFirstObjectByType<NeedleManager>();
+
         if (needleManager != null)
         {
             needleManager.OnPileCountChanged.AddListener(OnPileChanged);
@@ -193,11 +196,17 @@ public class Round2UI : MonoBehaviour
             needleManager.OnKillerShotConditionMet.AddListener(_ => ShowKillerShotBanner());
         }
 
+        if (roundTimer == null)
+            roundTimer = FindFirstObjectByType<RoundTimer>();
+
         if (roundTimer != null)
         {
             roundTimer.OnTimerTick.AddListener(OnTimerTick);
             roundTimer.OnTimerExpired.AddListener(OnTimerExpired);
         }
+
+        if (killerShotManager == null)
+            killerShotManager = FindFirstObjectByType<KillerShotManager>();
 
         if (killerShotManager != null)
         {

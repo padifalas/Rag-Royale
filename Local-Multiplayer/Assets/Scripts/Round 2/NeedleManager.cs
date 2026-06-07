@@ -113,9 +113,7 @@ public class NeedleManager : MonoBehaviour
             );
         }
         if (killerShotManager != null)
-            killerShotManager.OnKillerShotWinner.AddListener(OnKillerShotWon);
-        else
-            Debug.LogWarning("[NeedleManager] No KillerShotManager assigned or found.");
+            SetKillerShotManager(killerShotManager);
     }
 
     private void Update()
@@ -322,6 +320,7 @@ public class NeedleManager : MonoBehaviour
             OnKillerShotConditionMet?.Invoke(2);
         }
     }
+
     private void TryActivateKillerShot()
     {
         if (killerShotManager == null)
@@ -336,6 +335,7 @@ public class NeedleManager : MonoBehaviour
         if (killerShotManager != null)
         {
             killerShotManager.ActivateKillerShotForRound2();
+            SetKillerShotManager(killerShotManager); // Ensure subscription is active
         }
         else
         {
@@ -344,6 +344,22 @@ public class NeedleManager : MonoBehaviour
             );
         }
     }
+
+    /// <summary>
+    /// Injects the KillerShotManager and ensures event subscription.
+    /// </summary>
+    public void SetKillerShotManager(KillerShotManager manager)
+    {
+        // Cleanup old reference if it exists
+        if (killerShotManager != null)
+            killerShotManager.OnKillerShotWinner.RemoveListener(OnKillerShotWon);
+
+        killerShotManager = manager;
+
+        if (killerShotManager != null)
+            killerShotManager.OnKillerShotWinner.AddListener(OnKillerShotWon);
+    }
+
     private void OnKillerShotWon(int winnerID)
     {
         if (!killerShot1Triggered && !killerShot2Triggered)
