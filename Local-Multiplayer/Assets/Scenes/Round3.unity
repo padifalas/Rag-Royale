@@ -2433,9 +2433,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Round3Manager
   throwSystem: {fileID: 637136518}
-  roundTimer: {fileID: 0}
+  roundTimer: {fileID: 277316819}
   killerShotManager: {fileID: 1743650113}
-  countdownManager: {fileID: 0}
+  countdownManager: {fileID: 277316816}
   vfx: {fileID: 1306659517}
 --- !u!114 &277316821
 MonoBehaviour:
@@ -16127,8 +16127,8 @@ MonoBehaviour:
   matchWinDisplayTime: 4
   resultsPanel: {fileID: 1792462972}
   tiebreakerPanel: {fileID: 84773773}
-  tiebreakerCountdownText: {fileID: 529031397}
   tiebreakerHeaderText: {fileID: 1591738729}
+  tiebreakerCountdownText: {fileID: 529031397}
   countdownLabels:
   - 3
   - 2
@@ -16139,7 +16139,6 @@ MonoBehaviour:
   headerColorA: {r: 1, g: 0.15, b: 0.1, a: 1}
   headerColorB: {r: 1, g: 0.85, b: 0, a: 1}
   headerPulseSpeed: 3.5
-  headerPunchScale: 1.25
 --- !u!4 &1499360441
 Transform:
   m_ObjectHideFlags: 0
@@ -20809,8 +20808,8 @@ MonoBehaviour:
   matchWinDisplayTime: 4
   resultsPanel: {fileID: 0}
   tiebreakerPanel: {fileID: 0}
-  tiebreakerCountdownText: {fileID: 0}
   tiebreakerHeaderText: {fileID: 0}
+  tiebreakerCountdownText: {fileID: 0}
   countdownLabels:
   - 3
   - 2
@@ -20821,7 +20820,6 @@ MonoBehaviour:
   headerColorA: {r: 1, g: 0.15, b: 0.1, a: 1}
   headerColorB: {r: 1, g: 0.85, b: 0, a: 1}
   headerPulseSpeed: 3.5
-  headerPunchScale: 1.25
 --- !u!4 &1961155299
 Transform:
   m_ObjectHideFlags: 0

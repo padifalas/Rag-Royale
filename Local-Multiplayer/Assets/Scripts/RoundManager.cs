@@ -39,14 +39,15 @@ public class RoundManager : MonoBehaviour
     private MultiplayerPlayerController p2Controller;
 
     public UnityEvent<int> OnRoundStarted;
-    public UnityEvent<int> OnRoundWon;
+    public UnityEvent<int> OnRoundWon; // winnerID: 1, 2, or 0 (tie)
     public UnityEvent<int> OnMatchWon;
     public UnityEvent<int, int> OnScoreUpdated;
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     private void Start()
     {
         LoadFromMatchData();
-
         AudioManager.Instance?.CrossfadeToRound(CurrentRound);
     }
 
@@ -57,13 +58,14 @@ public class RoundManager : MonoBehaviour
             TryResolvePlayerReferences();
             return;
         }
-
         if (!roundStarted)
         {
             roundStarted = true;
             StartCoroutine(BeginRound());
         }
     }
+
+    // ── MatchData sync ────────────────────────────────────────────────────────
 
     private void LoadFromMatchData()
     {
@@ -92,16 +94,14 @@ public class RoundManager : MonoBehaviour
         MatchData.Instance.CurrentRound = CurrentRound;
     }
 
+    // ── Player resolution ─────────────────────────────────────────────────────
+
     private void TryResolvePlayerReferences()
     {
         var controllers = FindObjectsByType<MultiplayerPlayerController>(FindObjectsSortMode.None);
-        Debug.Log(
-            $"[RoundManager] TryResolvePlayerReferences: Found {controllers.Length} controllers in scene."
-        );
 
         PlayerHealth found1 = null,
             found2 = null;
-
         foreach (var c in controllers)
         {
             if (c.PlayerID == 1)
@@ -117,55 +117,30 @@ public class RoundManager : MonoBehaviour
         }
 
         if (found1 == null || found2 == null)
-        {
-            Debug.Log(
-                $"[RoundManager] Still waiting for players... P1:{(found1 != null ? "found" : "missing")} P2:{(found2 != null ? "found" : "missing")}"
-            );
             return;
-        }
 
         p1Health = found1;
         p2Health = found2;
-
         p1Health.OnPlayerDefeated.AddListener(() => OnPlayerDefeated(1));
         p2Health.OnPlayerDefeated.AddListener(() => OnPlayerDefeated(2));
-
         playersResolved = true;
-        Debug.Log("[RoundManager] Players resolved! Starting BeginRound.");
     }
+
+    // ── Round begin ───────────────────────────────────────────────────────────
 
     private IEnumerator BeginRound()
     {
         OnScoreUpdated?.Invoke(P1RoundWins, P2RoundWins);
         OnRoundStarted?.Invoke(CurrentRound);
 
-        // ensure we have a scene-local CountdownManager (some scenes don't wire the serialized reference)
         if (countdownManager == null)
-        {
             countdownManager = FindFirstObjectByType<CountdownManager>();
-            if (countdownManager == null)
-                Debug.LogWarning("[RoundManager] No CountdownManager found in scene.");
-            else
-                Debug.Log("[RoundManager] Found CountdownManager at runtime.");
-        }
 
         if (countdownManager != null)
         {
-            if (!countdownManager.gameObject.activeInHierarchy)
-            {
-                Debug.LogWarning("[RoundManager] CountdownManager is inactive, activating it.");
-                countdownManager.gameObject.SetActive(true);
-            }
-            if (!countdownManager.enabled)
-            {
-                Debug.LogWarning(
-                    "[RoundManager] CountdownManager script is disabled, enabling it."
-                );
-                countdownManager.enabled = true;
-            }
-
-            countdownManager.ResetCountdown(); // Reset the countdown flag for this round
+            countdownManager.ResetCountdown();
             countdownManager.StartCountdown();
+
             bool done = false;
             countdownManager.OnCountdownFinished.AddListener(() => done = true);
             yield return new WaitUntil(() => done);
@@ -176,22 +151,13 @@ public class RoundManager : MonoBehaviour
                 if (roundTimer != null)
                 {
                     if (roundTimerInstance != null)
-                    {
                         roundTimerInstance.OnTimerExpired.RemoveListener(OnRoundTimerExpired);
-                    }
 
                     roundTimerInstance = roundTimer;
-                    roundTimer.OnTimerExpired.AddListener(OnRoundTimerExpired);
+                    roundTimerInstance.OnTimerExpired.AddListener(OnRoundTimerExpired);
 
                     if (!roundTimer.IsRunning)
-                    {
-                        Debug.Log($"[RoundManager] Starting RoundTimer for Round {CurrentRound}.");
                         roundTimer.StartTimer();
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("[RoundManager] No RoundTimer found for timer-driven round end.");
                 }
             }
         }
@@ -199,11 +165,13 @@ public class RoundManager : MonoBehaviour
         roundOver = false;
     }
 
-    private void OnPlayerDefeated(int playerID)
+    // ── Round end ─────────────────────────────────────────────────────────────
+
+    private void OnPlayerDefeated(int defeatedPlayerID)
     {
         if (roundOver)
             return;
-        EndRound(winnerID: playerID == 1 ? 2 : 1);
+        EndRound(winnerID: defeatedPlayerID == 1 ? 2 : 1);
     }
 
     private void EndRound(int winnerID)
@@ -212,36 +180,40 @@ public class RoundManager : MonoBehaviour
             return;
         roundOver = true;
 
+        // FIX 1: winnerID == 0 means a genuine tie — neither player gets a win point.
+        // Previously this fell into the else branch and gave P2 a free win.
         if (winnerID == 1)
             P1RoundWins++;
-        else
+        else if (winnerID == 2)
             P2RoundWins++;
+        // winnerID == 0 → no increment, we go straight to the tiebreaker round
 
-        SaveToMatchData();
+        // FIX 2: Determine match over BEFORE bumping CurrentRound.
+        // SceneTransitionManager reads MatchData.CurrentRound inside OnRoundWon,
+        // so the round number must still reflect the round that just ended.
+        bool matchOver = P1RoundWins >= roundsToWin || P2RoundWins >= roundsToWin;
+
+        // A tie can only happen at the end of Round 2 (1-1).
+        // Treat it as "not match over" — force a Round 3.
+        bool isTie = winnerID == 0;
+
+        SaveToMatchData(); // saves CurrentRound before we increment
         OnRoundWon?.Invoke(winnerID);
         OnScoreUpdated?.Invoke(P1RoundWins, P2RoundWins);
 
-        bool matchOver = P1RoundWins >= roundsToWin || P2RoundWins >= roundsToWin;
-
-        if (matchOver)
+        if (matchOver && !isTie)
+        {
             StartCoroutine(EndMatch(winnerID));
+        }
         else
         {
+            // FIX 3: Increment CurrentRound AFTER firing OnRoundWon so that
+            // SceneTransitionManager sees the correct round number when it
+            // reads MatchData.Instance.CurrentRound inside its OnRoundWon handler.
             CurrentRound++;
             if (MatchData.Instance != null)
                 MatchData.Instance.CurrentRound = CurrentRound;
-            //StartCoroutine(TransitionToNextRound());
         }
-    }
-
-    private IEnumerator TransitionToNextRound()
-    {
-        yield return new WaitForSeconds(roundEndDelay);
-
-        if (sceneTransition != null)
-            sceneTransition.LoadNextRoundScene(CurrentRound);
-        else if (CurrentRound < MatchData.RoundScenes.Length)
-            UnityEngine.SceneManagement.SceneManager.LoadScene(MatchData.RoundScenes[CurrentRound]);
     }
 
     private IEnumerator EndMatch(int winnerID)
@@ -257,13 +229,12 @@ public class RoundManager : MonoBehaviour
 
         var needleManager = FindFirstObjectByType<NeedleManager>();
         if (needleManager != null)
-        {
             needleManager.CompareAndDecideWinner();
-            return;
-        }
-
-        Debug.LogWarning("[RoundManager] Round timer expired but NeedleManager was not found.");
+        else
+            Debug.LogWarning("[RoundManager] Timer expired but NeedleManager not found.");
     }
+
+    // ── Public API ────────────────────────────────────────────────────────────
 
     public void Debug_ForceEndRound(int winnerID) => EndRound(winnerID);
 }

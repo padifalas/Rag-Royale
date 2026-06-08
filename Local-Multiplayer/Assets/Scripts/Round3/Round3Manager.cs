@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(RoundManager))]
@@ -12,9 +13,6 @@ public class Round3Manager : MonoBehaviour
 
     [SerializeField]
     private KillerShotManager killerShotManager;
-
-    [SerializeField]
-    private CountdownManager countdownManager;
 
     [Header("Juice / VFX")]
     [SerializeField]
@@ -40,20 +38,8 @@ public class Round3Manager : MonoBehaviour
     {
         DisableCombat();
 
-        // If countdownManager not assigned in inspector, find it at runtime
-        if (countdownManager == null)
-        {
-            countdownManager = FindFirstObjectByType<CountdownManager>();
-            Debug.Log(
-                "[Round3Manager] Found CountdownManager at runtime: "
-                    + (countdownManager != null ? "success" : "failed")
-            );
-        }
-
-        if (countdownManager != null)
-            countdownManager.OnCountdownFinished.AddListener(OnCountdownFinished);
-        else
-            Debug.LogWarning("[Round3Manager] No CountdownManager found!");
+        // Round3Manager no longer touches the countdown or timer start.
+        // RoundManager.BeginRound() owns that sequence entirely.
 
         if (roundTimer != null)
             roundTimer.OnTimerExpired.AddListener(DecideWinner);
@@ -124,8 +110,6 @@ public class Round3Manager : MonoBehaviour
         p2KillerShotFired = true;
         killerShotManager?.ActivateKillerShotPhase_Round3(2);
     }
-
-    private void OnCountdownFinished() => roundTimer?.StartTimer();
 
     private void OnKillerShotPhaseStarted(int triggeringPlayerID) =>
         vfx?.PlayKillerShotWarning(triggeringPlayerID);

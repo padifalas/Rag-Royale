@@ -415,8 +415,8 @@ MonoBehaviour:
   lightAttackDamage: 5
   heavyAttackDamage: 8
   blockDamageReduction: 1
-  lightAttackCooldown: 1.5
-  heavyAttackCooldown: 3
+  lightAttackCooldown: 1
+  heavyAttackCooldown: 1.2
   attackRange: 2
   lightKnockbackForce: 3
   heavyKnockbackForce: 4

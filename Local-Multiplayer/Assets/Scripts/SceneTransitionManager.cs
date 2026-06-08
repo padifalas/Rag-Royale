@@ -135,7 +135,7 @@ public class SceneTransitionManager : MonoBehaviour
 
         if (tiebreakerHeaderText != null)
         {
-            tiebreakerHeaderText.text = "THE DOLLS ARE EVEN...";
+            tiebreakerHeaderText.text = "THE DOLLS ARE EVEN";
             StartCoroutine(PunchScale(tiebreakerHeaderText.transform, 1.25f, 0.12f));
             if (headerPulseCoroutine != null)
                 StopCoroutine(headerPulseCoroutine);

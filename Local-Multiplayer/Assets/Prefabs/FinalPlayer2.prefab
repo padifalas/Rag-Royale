@@ -5819,16 +5819,13 @@ PrefabInstance:
       addedObject: {fileID: 6449443269808411434}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 533416198522454045}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 521773736988465725}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3968748339926257497}
     - targetCorrespondingSourceObject: {fileID: 8416272007918961125, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8811909876952032530}
+    - targetCorrespondingSourceObject: {fileID: 8416272007918961125, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5950475966214338715}
     - targetCorrespondingSourceObject: {fileID: -7146521406498821007, guid: 9aadb0276bf1d4143ad886f595c54ed6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8079250296787751050}
@@ -5879,32 +5876,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &533416198522454045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1581918903325337293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a19579147a9f104e9d19c75e88b5def, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerArmMarker
-  PlayerID: 1
-  StringTrail: {fileID: 3783135961068470031}
---- !u!114 &521773736988465725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1581918903325337293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e39c2f7f71e9324fbc038a683ca2d0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LimbLagMarker
 --- !u!114 &3968748339926257497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5951,7 +5922,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerArmMarker
   PlayerID: 2
-  StringTrail: {fileID: 0}
+  StringTrail: {fileID: 3783135961068470031}
+--- !u!114 &5950475966214338715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7924622035969464953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e39c2f7f71e9324fbc038a683ca2d0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LimbLagMarker
 --- !u!1001 &4399882004883463154
 PrefabInstance:
   m_ObjectHideFlags: 0
