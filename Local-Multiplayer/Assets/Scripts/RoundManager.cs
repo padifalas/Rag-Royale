@@ -42,13 +42,25 @@ public class RoundManager : MonoBehaviour
     public UnityEvent<int> OnRoundWon;
     public UnityEvent<int> OnMatchWon;
     public UnityEvent<int, int> OnScoreUpdated;
+    public static RoundManager Instance { get; private set; }
 
+    private void OnDestroy()
+    {
+        Debug.Log($"ROUND MANAGER DESTROYED: {gameObject.name}");
+    }
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         LoadFromMatchData();
 
         AudioManager.Instance?.CrossfadeToRound(CurrentRound);
+
     }
+
+
 
     private void Update()
     {
@@ -197,6 +209,11 @@ public class RoundManager : MonoBehaviour
         }
 
         roundOver = false;
+
+        foreach (var p in FindObjectsByType<MultiplayerPlayerController>(FindObjectsSortMode.None))
+        {
+            p.SetMovementEnabled(true);
+        }
     }
 
     private void OnPlayerDefeated(int playerID)
@@ -208,6 +225,8 @@ public class RoundManager : MonoBehaviour
 
     private void EndRound(int winnerID)
     {
+        Debug.Log($"EndRound called on {gameObject.name}");
+
         if (roundOver)
             return;
         roundOver = true;

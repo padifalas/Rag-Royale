@@ -24,19 +24,29 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void Start()
     {
-        RoundManager roundManager = FindFirstObjectByType<RoundManager>();
-        if (roundManager == null)
+        var managers = FindObjectsByType<RoundManager>(FindObjectsSortMode.None);
+
+        Debug.Log($"RoundManagers found: {managers.Length}");
+
+        foreach (var rm in managers)
         {
-            Debug.LogWarning("[SceneTransitionManager] theres no RoundManager here boii.");
-            return;
+            Debug.Log($"Found RoundManager on object: {rm.gameObject.name}");
         }
+
+        RoundManager roundManager = RoundManager.Instance;
+
+        Debug.Log($"Subscribing to: {roundManager.gameObject.name}");
 
         roundManager.OnRoundWon.AddListener(OnRoundWon);
         roundManager.OnMatchWon.AddListener(OnMatchWon);
+
     }
+
 
     private void OnRoundWon(int winnerID)
     {
+        Debug.Log("ON ROUND WON CALLED");
+
         resultsPanel.SetActive(true);
 
         pendingRound = MatchData.Instance.CurrentRound + 1;

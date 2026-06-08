@@ -14,10 +14,10 @@ public class HitStop : MonoBehaviour
 
     private void Awake()
     {
-        
+
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         Instance = this;
@@ -52,7 +52,7 @@ public class HitStop : MonoBehaviour
         yield return new WaitForSecondsRealtime(duration);
 
         Time.timeScale = 1f;
-        isFrozen= false;
-        stopCoroutine  = null;
+        isFrozen = false;
+        stopCoroutine = null;
     }
 }

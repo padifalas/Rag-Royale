@@ -8,7 +8,7 @@ public class CameraShake : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool logShakeCalls = false;
 
-    private Vector3  originLocalPos;
+    private Vector3 originLocalPos;
     private bool originCaptured = false;
     private Coroutine shakeCoroutine;
 
@@ -16,10 +16,10 @@ public class CameraShake : MonoBehaviour
 
     private void Awake()
     {
-        
+
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         Instance = this;
@@ -34,11 +34,11 @@ public class CameraShake : MonoBehaviour
 
     public void Shake(float duration, float magnitude)
     {
-      
+
         if (!originCaptured)
         {
-            originLocalPos  = transform.localPosition;
-            originCaptured  = true;
+            originLocalPos = transform.localPosition;
+            originCaptured = true;
         }
 
         if (logShakeCalls)
@@ -48,26 +48,26 @@ public class CameraShake : MonoBehaviour
         shakeCoroutine = StartCoroutine(ShakeRoutine(duration, magnitude));
     }
 
- 
+
     public void ResetOrigin()
     {
         originLocalPos = transform.localPosition;
         originCaptured = true;
     }
 
-   
+
 
     private IEnumerator ShakeRoutine(float duration, float magnitude)
     {
         float elapsed = 0f;
-        float seed    = Random.value * 100f;
+        float seed = Random.value * 100f;
 
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime;   
+            elapsed += Time.unscaledDeltaTime;
 
             float t = Mathf.Clamp01(elapsed / duration);
-            float strength = Mathf.Lerp(magnitude, 0f, t);   
+            float strength = Mathf.Lerp(magnitude, 0f, t);
 
             float x = (Mathf.PerlinNoise(seed + elapsed * 30f, 0f) - 0.5f) * 2f * strength;
             float y = (Mathf.PerlinNoise(0f, seed + elapsed * 30f) - 0.5f) * 2f * strength;
