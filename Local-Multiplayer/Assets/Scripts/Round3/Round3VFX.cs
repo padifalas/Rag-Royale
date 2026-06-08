@@ -1,4 +1,3 @@
-// Round3VFX.cs
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,10 +38,16 @@ public class Round3VFX : MonoBehaviour
     [SerializeField]
     private ParticleSystem killerShotBurstParticles;
 
-    [Header("Round End Fanfare")]
+    [Header("Round End — Per-Player Confetti")]
+    [Tooltip("Confetti particle GO pre-placed in scene for P1 win — starts inactive")]
     [SerializeField]
-    private ParticleSystem winnerConfetti;
+    private GameObject p1ConfettiGO;
 
+    [Tooltip("Confetti particle GO pre-placed in scene for P2 win — starts inactive")]
+    [SerializeField]
+    private GameObject p2ConfettiGO;
+
+    [Header("Round End — Flash + Results")]
     [SerializeField]
     private Image roundEndFlashOverlay;
 
@@ -51,6 +56,13 @@ public class Round3VFX : MonoBehaviour
 
     [SerializeField]
     private Color roundEndFlashColor = new Color(1f, 0.85f, 0.1f, 0.45f);
+
+    [Tooltip("Results/game-over panel to show after round ends")]
+    [SerializeField]
+    private GameObject resultsPanel;
+
+    [SerializeField]
+    private float resultsPanelDelay = 1.2f;
 
     [Header("Audio Clips")]
     [SerializeField]
@@ -67,12 +79,24 @@ public class Round3VFX : MonoBehaviour
 
     private Coroutine overlayCoroutine;
 
+    private void Start()
+    {
+        // Confetti GOs are pre-placed in scene, start inactive
+        if (p1ConfettiGO != null)
+            p1ConfettiGO.SetActive(false);
+        if (p2ConfettiGO != null)
+            p2ConfettiGO.SetActive(false);
+        if (resultsPanel != null)
+            resultsPanel.SetActive(false);
+    }
+
+    // ── Power throw ───────────────────────────────────────────────────────────
+
     public void PlayPowerThrowReady(int playerID)
     {
         ParticleSystem ps = playerID == 1 ? p1PowerReadyParticles : p2PowerReadyParticles;
         if (ps != null && !ps.isPlaying)
             ps.Play();
-
         AudioManager.Instance?.Play(powerThrowReadyClip, 1f);
     }
 
@@ -86,7 +110,6 @@ public class Round3VFX : MonoBehaviour
     {
         ParticleSystem ps = playerID == 1 ? p1PowerLaunchBurst : p2PowerLaunchBurst;
         ps?.Play();
-
         AudioManager.Instance?.Play(powerThrowLaunchClip, 1.1f);
         CameraShake.Instance?.Shake(0.08f, 0.06f);
     }
@@ -97,6 +120,8 @@ public class Round3VFX : MonoBehaviour
         ps?.Play();
     }
 
+    // ── Killer shot ───────────────────────────────────────────────────────────
+
     public void PlayKillerShotWarning(int triggeringPlayerID)
     {
         killerShotBurstParticles?.Play();
@@ -104,12 +129,35 @@ public class Round3VFX : MonoBehaviour
         FlashOverlay(killerShotWarningOverlay, killerShotFlashColor, killerShotFlashDuration);
     }
 
+    // ── Round end ─────────────────────────────────────────────────────────────
+
     public void PlayRoundEndFanfare(int winnerID)
     {
-        winnerConfetti?.Play();
+        // Activate the winner's pre-placed confetti GO
+        GameObject confetti = winnerID == 1 ? p1ConfettiGO : p2ConfettiGO;
+        if (confetti != null)
+        {
+            confetti.SetActive(true);
+            // Play all particle systems on the GO and its children
+            foreach (var ps in confetti.GetComponentsInChildren<ParticleSystem>())
+                ps.Play();
+        }
+
         AudioManager.Instance?.Play(roundEndFanfareClip, 1f);
         FlashOverlay(roundEndFlashOverlay, roundEndFlashColor, roundEndFlashDuration);
+
+        // Show results panel after a short delay so the fanfare lands first
+        StartCoroutine(ShowResultsAfterDelay());
     }
+
+    private IEnumerator ShowResultsAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(resultsPanelDelay);
+        if (resultsPanel != null)
+            resultsPanel.SetActive(true);
+    }
+
+    // ── Overlay flash ─────────────────────────────────────────────────────────
 
     private void FlashOverlay(Image overlay, Color color, float duration)
     {
@@ -124,18 +172,15 @@ public class Round3VFX : MonoBehaviour
     {
         overlay.color = targetColor;
         overlay.gameObject.SetActive(true);
-
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = elapsed / duration;
             Color c = targetColor;
-            c.a = Mathf.Lerp(targetColor.a, 0f, t);
+            c.a = Mathf.Lerp(targetColor.a, 0f, elapsed / duration);
             overlay.color = c;
             yield return null;
         }
-
         overlay.gameObject.SetActive(false);
         overlayCoroutine = null;
     }

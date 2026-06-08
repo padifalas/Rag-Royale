@@ -12,6 +12,20 @@ public class Round3UI : MonoBehaviour
     [SerializeField]
     private KillerShotManager killerShotManager;
 
+    [Header("Round Timer")]
+    [SerializeField]
+    private TextMeshProUGUI roundTimerText;
+
+    [SerializeField]
+    private Color timerNormalColor = Color.white;
+
+    [SerializeField]
+    private Color timerUrgentColor = new Color(1f, 0.2f, 0.1f);
+
+    [SerializeField]
+    private float timerUrgentThreshold = 10f;
+    private RoundTimer roundTimer;
+
     [Header("Input Prompt Data")]
     [SerializeField]
     private InputPromptData promptData;
@@ -167,6 +181,16 @@ public class Round3UI : MonoBehaviour
             killerShotManager.OnEarlyPress.AddListener(OnEarlyPress);
         }
 
+        // Subscribe to RoundTimer for the countdown display
+        roundTimer = FindFirstObjectByType<RoundTimer>();
+        if (roundTimer != null)
+        {
+            roundTimer.OnTimerTick.AddListener(OnTimerTick);
+            roundTimer.OnTimerExpired.AddListener(OnTimerExpired);
+        }
+        else
+            Debug.LogWarning("[Round3UI] RoundTimer not found.");
+
         NeedleProjectile.OnProjectileHit += OnProjectileHit;
         StartCoroutine(InitAmmoNextFrame());
     }
@@ -190,6 +214,31 @@ public class Round3UI : MonoBehaviour
             killerShotManager.OnKillerShotWinner.RemoveListener(OnKillerShotWinner);
             killerShotManager.OnEarlyPress.RemoveListener(OnEarlyPress);
         }
+
+        if (roundTimer != null)
+        {
+            roundTimer.OnTimerTick.RemoveListener(OnTimerTick);
+            roundTimer.OnTimerExpired.RemoveListener(OnTimerExpired);
+        }
+    }
+
+    private void OnTimerTick(float remaining)
+    {
+        if (roundTimerText == null)
+            return;
+        int minutes = Mathf.FloorToInt(remaining / 60f);
+        int seconds = Mathf.FloorToInt(remaining % 60f);
+        roundTimerText.text = $"{minutes}:{seconds:00}";
+        roundTimerText.color =
+            remaining <= timerUrgentThreshold ? timerUrgentColor : timerNormalColor;
+    }
+
+    private void OnTimerExpired()
+    {
+        if (roundTimerText == null)
+            return;
+        roundTimerText.text = "0:00";
+        roundTimerText.color = timerUrgentColor;
     }
 
     private void Update()
