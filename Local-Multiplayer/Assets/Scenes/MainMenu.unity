@@ -2567,7 +2567,7 @@ MonoBehaviour:
   knockdownFall: {fileID: 8300000, guid: 5f41599651a18624598cb73b67199728, type: 3}
   mashGetUp: {fileID: 0}
   standUpSuccess: {fileID: 0}
-  armDetach: {fileID: 8300000, guid: 52b050a467261b64581b9dd342bda921, type: 3}
+  armDetach: {fileID: 0}
   stringPullLoop: {fileID: 0}
   killerShotTrigger: {fileID: 0}
   killerShotWin: {fileID: 0}

@@ -31120,7 +31120,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 396954067}
         m_TargetAssemblyTypeName: MenuManagerScript, Assembly-CSharp
         m_MethodName: OnSettingsPress
         m_Mode: 1
