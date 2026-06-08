@@ -20,10 +20,10 @@ MonoBehaviour:
     gamepadSprite: {fileID: 21300000, guid: 016aa7860f28f054686e9d8e9b4ca29e, type: 3}
   pullString:
     keyboardSprite: {fileID: 21300000, guid: 3677be302d64a584c8cb342a53923fe2, type: 3}
-    gamepadSprite: {fileID: 21300000, guid: 36c7e5481f6d78e4fa26acd6c90db64b, type: 3}
+    gamepadSprite: {fileID: 21300000, guid: 60d603ab455f8ea458e33c5479263201, type: 3}
   collect:
     keyboardSprite: {fileID: 21300000, guid: 3717016c15d26f945bc80cd04c95e2b8, type: 3}
-    gamepadSprite: {fileID: 21300000, guid: fdd83218247f31248af9588cb670076a, type: 3}
+    gamepadSprite: {fileID: 21300000, guid: 43debe4afa6c02d459533e2ca8550139, type: 3}
   throwAction:
     keyboardSprite: {fileID: 21300000, guid: 290f53a1e10e07f4db80f757774c15a4, type: 3}
     gamepadSprite: {fileID: 21300000, guid: 60d603ab455f8ea458e33c5479263201, type: 3}

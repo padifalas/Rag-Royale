@@ -31094,7 +31094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 263983e5b4b060c43b6e8a2675839aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoundTimer
-  duration: 90
+  duration: 120
   OnTimerTick:
     m_PersistentCalls:
       m_Calls: []
@@ -73974,7 +73974,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5622641, g: 0.15594871, b: 0.15594871, a: 0.39215687}
+  m_Color: {r: 0.5622641, g: 0.15594871, b: 0.15594871, a: 0}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
