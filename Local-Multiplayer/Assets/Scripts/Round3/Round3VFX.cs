@@ -4,21 +4,21 @@ using UnityEngine.UI;
 
 public class Round3VFX : MonoBehaviour
 {
-    [Header("Power Throw — Readiness Particles")]
+    [Header("Power Throw ")]
     [SerializeField]
     private ParticleSystem p1PowerReadyParticles;
 
     [SerializeField]
     private ParticleSystem p2PowerReadyParticles;
 
-    [Header("Power Throw — Launch Burst")]
+    [Header("Power Throw  Launch Burst")]
     [SerializeField]
     private ParticleSystem p1PowerLaunchBurst;
 
     [SerializeField]
     private ParticleSystem p2PowerLaunchBurst;
 
-    [Header("Normal Throw — Launch Puff")]
+    [Header("Normal Throw")]
     [SerializeField]
     private ParticleSystem p1NormalLaunchPuff;
 
@@ -38,12 +38,10 @@ public class Round3VFX : MonoBehaviour
     [SerializeField]
     private ParticleSystem killerShotBurstParticles;
 
-    [Header("Round End — Per-Player Confetti")]
-    [Tooltip("Confetti particle GO pre-placed in scene for P1 win — starts inactive")]
+    [Header("Round End  Confetti")]
     [SerializeField]
     private GameObject p1ConfettiGO;
 
-    [Tooltip("Confetti particle GO pre-placed in scene for P2 win — starts inactive")]
     [SerializeField]
     private GameObject p2ConfettiGO;
 
@@ -81,7 +79,6 @@ public class Round3VFX : MonoBehaviour
 
     private void Start()
     {
-        // Confetti GOs are pre-placed in scene, start inactive
         if (p1ConfettiGO != null)
             p1ConfettiGO.SetActive(false);
         if (p2ConfettiGO != null)
@@ -89,8 +86,6 @@ public class Round3VFX : MonoBehaviour
         if (resultsPanel != null)
             resultsPanel.SetActive(false);
     }
-
-    // ── Power throw ───────────────────────────────────────────────────────────
 
     public void PlayPowerThrowReady(int playerID)
     {
@@ -120,16 +115,12 @@ public class Round3VFX : MonoBehaviour
         ps?.Play();
     }
 
-    // ── Killer shot ───────────────────────────────────────────────────────────
-
     public void PlayKillerShotWarning(int triggeringPlayerID)
     {
         killerShotBurstParticles?.Play();
         AudioManager.Instance?.Play(killerShotWarningClip, 1f);
         FlashOverlay(killerShotWarningOverlay, killerShotFlashColor, killerShotFlashDuration);
     }
-
-    // ── Round end ─────────────────────────────────────────────────────────────
 
     public void PlayRoundEndFanfare(int winnerID)
     {
@@ -156,8 +147,6 @@ public class Round3VFX : MonoBehaviour
         if (resultsPanel != null)
             resultsPanel.SetActive(true);
     }
-
-    // ── Overlay flash ─────────────────────────────────────────────────────────
 
     private void FlashOverlay(Image overlay, Color color, float duration)
     {
