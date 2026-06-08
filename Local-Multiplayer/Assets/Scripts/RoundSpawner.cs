@@ -26,17 +26,28 @@ public class RoundSpawner : MonoBehaviour
 
     private void Start()
     {
-        // Only act in Round 2+. Round 1 uses PlayerInputManager directly.
         if (MatchData.Instance == null || MatchData.Instance.CurrentRound <= 1)
+        {
+            Debug.Log("[RoundSpawner] Round 1 or no MatchData — RoundSpawner inactive.");
             return;
+        }
 
-        // Disable the scene's PlayerInputManager so it can't spawn duplicates
-        // while RoundSpawner is doing its own managed instantiation.
+        // Kill PlayerInputManager — RoundSpawner owns spawning in Round 2+.
+        // If PlayerInputManager runs alongside us it will spawn duplicate players.
         var pim = FindFirstObjectByType<PlayerInputManager>();
         if (pim != null)
         {
             pim.enabled = false;
-            Debug.Log("[RoundSpawner] Disabled scene PlayerInputManager.");
+            Debug.Log("[RoundSpawner] Disabled PlayerInputManager.");
+        }
+
+        // Kill JoinUIManager — it's Round 1 only. Disabling it in its own
+        // Awake handles it too but this is a safety net.
+        var joinUI = FindFirstObjectByType<JoinUIManager>();
+        if (joinUI != null)
+        {
+            joinUI.enabled = false;
+            Debug.Log("[RoundSpawner] Disabled JoinUIManager.");
         }
 
         StartCoroutine(SpawnThenCountdown());

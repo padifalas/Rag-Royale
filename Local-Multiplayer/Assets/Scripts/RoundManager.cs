@@ -44,6 +44,11 @@ public class RoundManager : MonoBehaviour
     public UnityEvent<int, int> OnScoreUpdated;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
+    // Add temporarily to RoundManager.cs
+    private void Awake()
+    {
+        Debug.Log($"[RoundManager] Awake on '{gameObject.name}'");
+    }
 
     private void Start()
     {
@@ -232,6 +237,26 @@ public class RoundManager : MonoBehaviour
             needleManager.CompareAndDecideWinner();
         else
             Debug.LogWarning("[RoundManager] Timer expired but NeedleManager not found.");
+    }
+
+    private void OnDestroy()
+    {
+        // Print every component still on this GO at time of destruction
+        var components = gameObject.GetComponents<Component>();
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine(
+            $"[RoundManager] '{gameObject.name}' DESTROYED at Round={CurrentRound}. Components on GO at destroy time:"
+        );
+        foreach (var c in components)
+            sb.AppendLine($"  - {(c != null ? c.GetType().Name : "NULL/Missing")}");
+        Debug.LogError(sb.ToString());
+    }
+
+    private void OnDisable()
+    {
+        Debug.LogWarning(
+            $"[RoundManager] GO '{gameObject.name}' was DISABLED at Round={CurrentRound}."
+        );
     }
 
     // ── Public API ────────────────────────────────────────────────────────────

@@ -232,6 +232,11 @@ public class KillerShotPromptUI : MonoBehaviour
 
     private void ShowFeedback(int playerID, string message, Color color)
     {
+        // Feedback must fire even after the prompt panel is hidden.
+        // If our GO is inactive, reactivate it so coroutines can run.
+        if (!gameObject.activeInHierarchy)
+            gameObject.SetActive(true);
+
         TextMeshProUGUI target = playerID == 1 ? p1FeedbackText : p2FeedbackText;
         if (target == null)
             return;

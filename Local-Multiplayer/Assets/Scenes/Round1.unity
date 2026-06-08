@@ -13496,7 +13496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionManager
   matchWinDisplayTime: 4
-  resultsPanel: {fileID: 1792462972}
+  resultsPanel: {fileID: 551346387}
   tiebreakerPanel: {fileID: 0}
   tiebreakerHeaderText: {fileID: 0}
   tiebreakerCountdownText: {fileID: 0}
@@ -15345,16 +15345,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: d76955759729912458c928efeda526aa, type: 3}
     - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 888348}
+      objectReference: {fileID: 350599771}
     - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadScene
+      value: LoadNextRoundScene
       objectReference: {fileID: 0}
     - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelManager, Assembly-CSharp
+      value: SceneTransitionManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3035585891423653506, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -15452,6 +15460,11 @@ PrefabInstance:
 --- !u!224 &551346386 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5475851191198351092, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
+  m_PrefabInstance: {fileID: 551346385}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &551346387 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7488996808849439827, guid: a06d9b196e894a14b9494fc074cf5ac0, type: 3}
   m_PrefabInstance: {fileID: 551346385}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &555870357

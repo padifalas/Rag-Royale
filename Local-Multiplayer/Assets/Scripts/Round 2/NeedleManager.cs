@@ -464,27 +464,33 @@ public class NeedleManager : MonoBehaviour
 
     public void CompareAndDecideWinner()
     {
-        if (roundOver)
-            return;
-        roundOver = true;
-        SaveToMatchData();
-        int winner =
-            P1NeedleCount > P2NeedleCount ? 1
-            : P2NeedleCount > P1NeedleCount ? 2
-            : 0;
-        OnRoundWinner?.Invoke(winner);
+        Debug.Log($"[NeedleManager] CompareAndDecideWinner P1={P1NeedleCount} P2={P2NeedleCount}");
 
-        if (FindFirstObjectByType<Round2Manager>() == null)
+        int winner;
+        if (P1NeedleCount > P2NeedleCount)
+            winner = 1;
+        else if (P2NeedleCount > P1NeedleCount)
+            winner = 2;
+        else
+            winner = 0; // tie
+
+        Debug.Log($"[NeedleManager] Declaring winner={winner}");
+
+        // Nuclear fallback — just load Round 3 directly
+        if (
+            winner == 0
+            || (
+                MatchData.Instance != null
+                && MatchData.Instance.P1RoundWins == MatchData.Instance.P2RoundWins
+            )
+        )
         {
-            var roundManager = FindFirstObjectByType<RoundManager>();
-            if (roundManager != null)
-            {
-                Debug.Log(
-                    "[NeedleManager] No Round2Manager present; forcing round end through RoundManager."
-                );
-                roundManager.Debug_ForceEndRound(winner == 0 ? 1 : winner);
-            }
+            Debug.Log("[NeedleManager] Tie or equal wins — loading Round 3 directly");
+            LevelManager.Instance.LoadScene("Round3");
+            return;
         }
+
+        OnRoundWinner?.Invoke(winner);
     }
 
     private void SaveToMatchData()

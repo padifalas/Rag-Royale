@@ -110,6 +110,11 @@ public class AudioManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning(
+                $"[AudioManager] Duplicate detected on '{gameObject.name}' — destroying this GO. "
+                    + $"Existing instance is on '{Instance.gameObject.name}'. "
+                    + $"Move AudioManager to its own dedicated GameObject."
+            );
             Destroy(gameObject);
             return;
         }

@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -36,14 +35,43 @@ public class JoinUIManager : MonoBehaviour
     private bool p1Joined = false;
     private bool p2Joined = false;
 
+    private void Awake()
+    {
+        // If we're not in Round 1, this component serves no purpose.
+        // Disable it immediately in Awake — before any Start() or event
+        // subscription runs — so PlayerInputManager join events never
+        // reach this script in Round 2 or Round 3.
+        if (MatchData.Instance != null && MatchData.Instance.CurrentRound > 1)
+        {
+            Debug.Log(
+                $"[JoinUIManager] Round {MatchData.Instance.CurrentRound} — disabling self. Join UI only runs in Round 1."
+            );
+            enabled = false;
+            return;
+        }
+
+        if (MatchData.Instance == null)
+        {
+            Debug.LogWarning("[JoinUIManager] No MatchData in Awake — assuming Round 1.");
+        }
+    }
+
     private void Start()
     {
-        p1JoinedText.gameObject.SetActive(false);
-        p2JoinedText.gameObject.SetActive(false);
+        // Awake may have disabled us — double-check before doing anything.
+        if (!enabled)
+            return;
 
-        p1PromptText.gameObject.SetActive(true);
-        p2PromptText.gameObject.SetActive(true);
-        // If players were already registered (persisting across scenes), reflect that state
+        // Null-guard every UI reference so missing wires don't crash the GO.
+        if (p1JoinedText != null)
+            p1JoinedText.SetActive(false);
+        if (p2JoinedText != null)
+            p2JoinedText.SetActive(false);
+        if (p1PromptText != null)
+            p1PromptText.SetActive(true);
+        if (p2PromptText != null)
+            p2PromptText.SetActive(true);
+
         var registry = PlayerInputRegistry.Instance;
         if (registry != null)
         {
@@ -51,11 +79,13 @@ public class JoinUIManager : MonoBehaviour
             {
                 p1Joined = true;
                 ShowJoined(p1PromptText, p1JoinedText);
+                Debug.Log("[JoinUIManager] P1 already registered on Start.");
             }
             if (registry.IsRegistered(2))
             {
                 p2Joined = true;
                 ShowJoined(p2PromptText, p2JoinedText);
+                Debug.Log("[JoinUIManager] P2 already registered on Start.");
             }
 
             if (p1Joined && p2Joined)
@@ -65,19 +95,21 @@ public class JoinUIManager : MonoBehaviour
 
     public void OnPlayerJoined(PlayerInput player)
     {
-        // Guard: only handle joins in Round 1
+        // Hard guard — this should never fire outside Round 1 now that
+        // Awake disables the component, but belt-and-suspenders.
         if (MatchData.Instance != null && MatchData.Instance.CurrentRound > 1)
         {
-            Debug.Log("[JoinUIManager] Ignoring join event — not Round 1.");
+            Debug.LogWarning(
+                $"[JoinUIManager] OnPlayerJoined fired in Round {MatchData.Instance.CurrentRound} — ignoring. Check PlayerInputManager is disabled in this scene."
+            );
             return;
         }
 
-        // Debug.Log($"[JoinUIManager] OnPlayerJoined fired — playerIndex={player.playerIndex}");
-
         int id = player.playerIndex + 1;
-        StartCoroutine(RegisterNextFrame(id, player));
+        Debug.Log($"[JoinUIManager] P{id} joined.");
 
-        PlayerInputRegistry.Instance?.RegisterPlayer(id, player);
+        // Register after one frame so PlayerInput commits its scheme.
+        StartCoroutine(RegisterNextFrame(id, player));
 
         if (id == 1 && !p1Joined)
         {
@@ -96,14 +128,16 @@ public class JoinUIManager : MonoBehaviour
 
     private IEnumerator RegisterNextFrame(int id, PlayerInput player)
     {
-        yield return null; // wait one frame for scheme to commit
+        yield return null;
         PlayerInputRegistry.Instance?.RegisterPlayer(id, player);
     }
 
     private void ShowJoined(GameObject promptText, GameObject joinedText)
     {
-        promptText.gameObject.SetActive(false);
-        joinedText.gameObject.SetActive(true);
+        if (promptText != null)
+            promptText.SetActive(false);
+        if (joinedText != null)
+            joinedText.SetActive(true);
     }
 
     private IEnumerator HideAllAfterDelay()

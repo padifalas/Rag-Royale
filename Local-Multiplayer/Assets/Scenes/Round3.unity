@@ -2215,15 +2215,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 277316808}
-  - component: {fileID: 277316807}
-  - component: {fileID: 277316814}
-  - component: {fileID: 277316815}
   - component: {fileID: 277316821}
   - component: {fileID: 277316820}
   - component: {fileID: 277316816}
   - component: {fileID: 277316819}
-  - component: {fileID: 277316818}
-  - component: {fileID: 277316817}
   m_Layer: 0
   m_Name: <<<---R3-GameManager--->>>
   m_TagString: Untagged
@@ -2231,62 +2226,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &277316807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInputManager
-  m_NotificationBehavior: 2
-  m_MaxPlayerCount: 2
-  m_AllowJoining: 1
-  m_JoinBehavior: 2
-  m_PlayerJoinedEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: JoinUIManager, Assembly-CSharp
-        m_MethodName: OnPlayerJoined
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_PlayerLeftEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_JoinAction:
-    m_UseReference: 0
-    m_Action:
-      m_Name: 
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 9424c3c3-ef53-4b1d-af18-e51bbf3e9aba
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 0}
-  m_PlayerPrefab: {fileID: 1851244460066674257, guid: b2d1d939b6a6cd540a33a9605d12e7b5, type: 3}
-  m_SplitScreen: 0
-  m_MaintainAspectRatioInSplitScreen: 0
-  m_FixedNumberOfSplitScreens: -1
-  m_SplitScreenRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
 --- !u!4 &277316808
 Transform:
   m_ObjectHideFlags: 0
@@ -2305,31 +2244,6 @@ Transform:
   - {fileID: 1743650114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &277316814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a94ebb69cf51f4f479b8e4381b4b45d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuInputManager
-  menuOpenCloseAction: {fileID: 3906513150703437070, guid: c72fde7d841ad85409177be57f718a6a, type: 3}
---- !u!114 &277316815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba92b7a1130dff247a30743b4e5ac397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputRegistry
 --- !u!114 &277316816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2357,7 +2271,7 @@ MonoBehaviour:
   OnCountdownStep:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1157975246}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: RoundAudioController, Assembly-CSharp
         m_MethodName: PlayCountdownTick
         m_Mode: 6
@@ -2375,32 +2289,6 @@ MonoBehaviour:
   OnCountdownFinished:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &277316817
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1644f3268a3905747b359b594be14308, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
-  logShakeCalls: 0
---- !u!114 &277316818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277316806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d9363502fd4fbd408039be1d44ff4f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitStop
-  logFreezeCalls: 0
 --- !u!114 &277316819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2435,7 +2323,6 @@ MonoBehaviour:
   throwSystem: {fileID: 637136518}
   roundTimer: {fileID: 277316819}
   killerShotManager: {fileID: 1743650113}
-  countdownManager: {fileID: 277316816}
   vfx: {fileID: 1306659517}
 --- !u!114 &277316821
 MonoBehaviour:
@@ -2450,8 +2337,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoundManager
   killerShotManager: {fileID: 1743650113}
-  knockdownManager: {fileID: 0}
-  countdownManager: {fileID: 0}
+  knockdownManager: {fileID: 316320516}
+  countdownManager: {fileID: 277316816}
   sceneTransition: {fileID: 1961155298}
   roundsToWin: 2
   roundEndDelay: 2.5
@@ -12145,126 +12032,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3796239365302334464, guid: 5f6a43afdcafd174fbb1a1c7dac1e750, type: 3}
   m_PrefabInstance: {fileID: 1149185896}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1157975243
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1157975245}
-  - component: {fileID: 1157975244}
-  - component: {fileID: 1157975247}
-  - component: {fileID: 1157975246}
-  m_Layer: 0
-  m_Name: <<<---AudioManager--->>>
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1157975244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157975243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93bb500b9a4bb3c4ca40c84adb681f22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  masterVolume: 1
-  musicVolume: 0.7
-  sfxVolume: 1
-  roundTracks: []
-  crossfadeDuration: 1.5
-  lightHit: {fileID: 8300000, guid: ac6717755fe6770479b55b5c095a7c4f, type: 3}
-  heavyHit: {fileID: 8300000, guid: ac6717755fe6770479b55b5c095a7c4f, type: 3}
-  blockImpact: {fileID: 0}
-  knockdownFall: {fileID: 0}
-  mashGetUp: {fileID: 0}
-  standUpSuccess: {fileID: 0}
-  armDetach: {fileID: 0}
-  stringPullLoop: {fileID: 0}
-  killerShotTrigger: {fileID: 0}
-  killerShotWin: {fileID: 0}
-  killerShotEarly: {fileID: 0}
-  killerShotPerfect: {fileID: 0}
-  roundStartBell: {fileID: 8300000, guid: 5d591abc045496940ac14cd63b6448f5, type: 3}
-  roundWinChant: {fileID: 8300000, guid: 42b7a7479138e354f83552d868b4136d, type: 3}
-  matchWinChant: {fileID: 8300000, guid: 42b7a7479138e354f83552d868b4136d, type: 3}
-  countdownTick: {fileID: 0}
-  countdownFinalTick: {fileID: 0}
-  needleCollect: {fileID: 0}
-  needleDeposit: {fileID: 0}
-  needleStolen: {fileID: 0}
-  p1SpatialSource: {fileID: 0}
-  p2SpatialSource: {fileID: 0}
-  menuNavigate: {fileID: 0}
-  menuConfirm: {fileID: 0}
-  menuBack: {fileID: 0}
-  ambientLoop: {fileID: 8300000, guid: 82a8ac74164e61646945e1b7132d7cfc, type: 3}
-  sfxPoolSize: 16
---- !u!4 &1157975245
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157975243}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 396.12115, y: 1064.682, z: 217.7472}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1157975246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157975243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 435f19ffccbea3b4db5185aef6014701, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RoundAudioController
-  roundManager: {fileID: 0}
-  killerShotManager: {fileID: 0}
-  bellDelay: 0.25
-  chantDelay: 0.55
---- !u!114 &1157975247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157975243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8ff541913bc602409290a3204c8cfaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MusicManager
-  menuSceneName: MainMenu
-  gameSceneName: Game
-  menuVolume: 0.45
-  preFightVolume: 0.7
-  fightingVolume: 1
-  killerShotVolume: 0.75
-  roundEndVolume: 0.25
-  matchEndVolume: 0
-  menuFadeIn: 2
-  preFightFade: 2.5
-  fightSnapFade: 0.5
-  killerShotFade: 0.8
-  roundEndFade: 0.4
-  matchEndFade: 3
 --- !u!1001 &1163092492
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14097,7 +13864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 435f19ffccbea3b4db5185aef6014701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoundAudioController
-  roundManager: {fileID: 0}
+  roundManager: {fileID: 277316821}
   killerShotManager: {fileID: 1743650113}
   bellDelay: 0.25
   chantDelay: 0.55
@@ -14939,8 +14706,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 40450678caafb4846a0adce434d70f1a, type: 2}
-  m_sharedMaterial: {fileID: 2418670280698724095, guid: 40450678caafb4846a0adce434d70f1a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 98b7689b24d5c214aafc895c54f7d424, type: 2}
+  m_sharedMaterial: {fileID: -1219465351638690358, guid: 98b7689b24d5c214aafc895c54f7d424, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -22272,6 +22039,5 @@ SceneRoots:
   - {fileID: 1499360441}
   - {fileID: 1659513946}
   - {fileID: 534528285}
-  - {fileID: 1157975245}
   - {fileID: 1276393225}
   - {fileID: 122912002}

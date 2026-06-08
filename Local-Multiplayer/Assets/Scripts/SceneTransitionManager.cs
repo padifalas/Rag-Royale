@@ -128,6 +128,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator TiebreakerSequence()
     {
+        gameObject.SetActive(true); // ADD THIS LINE
         yield return new WaitForSecondsRealtime(preCountdownDelay);
 
         if (tiebreakerPanel != null)
