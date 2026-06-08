@@ -14928,8 +14928,8 @@ MonoBehaviour:
   roundEndFlashColor: {r: 0.33333334, g: 0, b: 0.3529412, a: 1}
   resultsPanel: {fileID: 1792462972}
   resultsPanelDelay: 1.2
-  powerThrowReadyClip: {fileID: 0}
-  powerThrowLaunchClip: {fileID: 0}
+  powerThrowReadyClip: {fileID: 8300000, guid: 1a60c44904ee87a47aef7a8aff320b1f, type: 3}
+  powerThrowLaunchClip: {fileID: 8300000, guid: f05d2a026f7abd34e9be69aa9765988a, type: 3}
   killerShotWarningClip: {fileID: 0}
   roundEndFanfareClip: {fileID: 0}
 --- !u!4 &1306659519
