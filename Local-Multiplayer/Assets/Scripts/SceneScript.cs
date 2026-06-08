@@ -9,6 +9,7 @@ public class SceneScript : MonoBehaviour
     [SerializeField] private GameObject mainCanvasGO;
     [SerializeField] private GameObject cutSceneCanvasGO;
     [SerializeField] private GameObject optionsCanvasGO;
+    [SerializeField] private GameObject howToPlayCanvasGO;
     [SerializeField] private GameObject controllerCanvasGO;
     [SerializeField] private GameObject keyboardCanvasGO;
     [SerializeField] private GameObject creditsCanvasGO;
@@ -25,12 +26,13 @@ public class SceneScript : MonoBehaviour
     [Header("Controller First Selected Menu Options")]
     [SerializeField] private GameObject playFirst;
     [SerializeField] private GameObject optionsFirst;
+    [SerializeField] private GameObject howToPlayFirst;
     [SerializeField] private GameObject controllerFirst;
     [SerializeField] private GameObject keyboardFirst;
     [SerializeField] private GameObject creditsFirst;
 
     [Header("First Selected Scene Panels")]
-    [SerializeField] private GameObject scenePanelFirst;
+    [SerializeField] private GameObject[] scenePanelFirstButtons;
 
 
     void Start()
@@ -38,6 +40,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(true);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(false);
@@ -63,6 +66,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(true);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(false);
@@ -76,6 +80,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(false);
         cutSceneCanvasGO.SetActive(true);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(false);
@@ -86,7 +91,7 @@ public class SceneScript : MonoBehaviour
 
         ShowScenePanel(currentScenePanel);
 
-        EventSystem.current.SetSelectedGameObject(scenePanelFirst);
+        //EventSystem.current.SetSelectedGameObject(scenePanelFirstButtons);
 
     }
 
@@ -110,15 +115,17 @@ public class SceneScript : MonoBehaviour
         }
 
         scenePanels[panelIndex].SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(scenePanelFirstButtons[panelIndex]);
         // nextButton.SetActive(true);
 
 
         // Last panel logic
-        if (panelIndex == scenePanels.Length - 3)
+        if (panelIndex == scenePanels.Length - 1)
         {
             nextButton.SetActive(false);
             startGameButton.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(playFirst);
         }
         else
         {
@@ -132,6 +139,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(false);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(true);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(false);
@@ -142,11 +150,26 @@ public class SceneScript : MonoBehaviour
 
     }
 
+    private void OpenHowToPlay()
+    {
+        mainCanvasGO.SetActive(false);
+        cutSceneCanvasGO.SetActive(false);
+        optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(true);
+        controllerCanvasGO.SetActive(false);
+        keyboardCanvasGO.SetActive(false);
+        creditsCanvasGO.SetActive(false);
+
+
+        EventSystem.current.SetSelectedGameObject(howToPlayFirst);
+    }
+
     private void OpenController()
     {
         mainCanvasGO.SetActive(false);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(true);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(false);
@@ -161,6 +184,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(false);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(true);
         creditsCanvasGO.SetActive(false);
@@ -175,6 +199,7 @@ public class SceneScript : MonoBehaviour
         mainCanvasGO.SetActive(false);
         cutSceneCanvasGO.SetActive(false);
         optionsCanvasGO.SetActive(false);
+        howToPlayCanvasGO.SetActive(false);
         controllerCanvasGO.SetActive(false);
         keyboardCanvasGO.SetActive(false);
         creditsCanvasGO.SetActive(true);
@@ -208,8 +233,12 @@ public class SceneScript : MonoBehaviour
 
     #endregion
 
-    #region Settings Menu Actions
+    #region Options Menu Actions
 
+    public void OnHowToPlayPress()
+    {
+        OpenHowToPlay();
+    }
     public void OnControllerPress()
     {
         OpenController();
