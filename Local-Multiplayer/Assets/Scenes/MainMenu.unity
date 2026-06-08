@@ -2511,7 +2511,7 @@ MonoBehaviour:
   knockdownFall: {fileID: 8300000, guid: 5f41599651a18624598cb73b67199728, type: 3}
   mashGetUp: {fileID: 0}
   standUpSuccess: {fileID: 0}
-  armDetach: {fileID: 0}
+  armDetach: {fileID: 8300000, guid: 52b050a467261b64581b9dd342bda921, type: 3}
   stringPullLoop: {fileID: 0}
   killerShotTrigger: {fileID: 0}
   killerShotWin: {fileID: 0}
@@ -2527,9 +2527,9 @@ MonoBehaviour:
   needleStolen: {fileID: 8300000, guid: 1a60c44904ee87a47aef7a8aff320b1f, type: 3}
   p1SpatialSource: {fileID: 0}
   p2SpatialSource: {fileID: 0}
-  menuNavigate: {fileID: 0}
-  menuConfirm: {fileID: 0}
-  menuBack: {fileID: 0}
+  menuNavigate: {fileID: 8300000, guid: 4ac7531716890cf42b3f414a875905dd, type: 3}
+  menuConfirm: {fileID: 8300000, guid: bb77b40b8c73722429c6b97ebb128037, type: 3}
+  menuBack: {fileID: 8300000, guid: 9a0578b5966f4a24bbe1e8c0bb218afa, type: 3}
   ambientLoop: {fileID: 8300000, guid: 82a8ac74164e61646945e1b7132d7cfc, type: 3}
   sfxPoolSize: 16
 --- !u!4 &751728277
