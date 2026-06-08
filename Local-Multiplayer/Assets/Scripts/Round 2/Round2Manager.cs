@@ -112,6 +112,7 @@ public class Round2Manager : MonoBehaviour
 
     private void OnTimerExpired() => needleManager?.CompareAndDecideWinner();
 
+    // In Round2Manager — fix OnNeedleRoundWinner
     private void OnNeedleRoundWinner(int winnerID)
     {
         if (MatchData.Instance != null)
@@ -121,7 +122,19 @@ public class Round2Manager : MonoBehaviour
             MatchData.Instance.P2NeedleCount =
                 needleManager != null ? needleManager.P2NeedleCount : 0;
         }
-        roundManager.Debug_ForceEndRound(winnerID == 0 ? 1 : winnerID);
+
+        if (winnerID == 0)
+        {
+            // Genuine tie — neither player wins a round point.
+            // Force round end with a sentinel value so SceneTransitionManager
+            // can detect the tie and show the tiebreaker panel.
+            // We pass 0 here; RoundManager.Debug_ForceEndRound must handle 0.
+            Debug.Log("[Round2Manager] Needle tie — triggering tiebreaker.");
+            roundManager.Debug_ForceEndRound(0);
+            return;
+        }
+
+        roundManager.Debug_ForceEndRound(winnerID);
     }
 
     private void PauseTimer()
